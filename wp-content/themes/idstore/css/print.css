@@ -1,0 +1,82 @@
+
+@media all {
+    .page-break { display: none; }
+}
+
+@media print {
+    body{
+        visibility: hidden;
+    }
+    table{
+        visibility: visible;
+    }
+    *{position: relative;}
+    .page-break { display: block; page-break-before: always; }
+    p{
+        display: none !important;
+        visibility: hidden !important;
+    }
+    /*table{break-before: always;break-after: always;}*/
+    /**{display: none;}*/
+    .sf_ups_shipping_label {
+        display: block;
+        width: auto;
+        height: 4.5in;
+        float: none;
+        align:middle;
+        top: 45%;
+        left: -40.25%;
+    }
+
+    @page{
+        margin: 0in;
+        padding: 0in;
+    }
+
+    .sf_ups_shipping_packing_list_label {
+        font-size: 42px !important;
+        border-style: solid !important;
+        border-width: thick !important;
+        display: block !important;
+        width: 4.25in !important;
+        height: auto !important;
+        min-height: 4.5in !important;
+        padding: 0in !important;
+        margin: 0in !important;
+        float: none !important;
+        align: middle !important;
+        top: 5%;
+        /*left: -40.75%;*/
+    }
+
+    .sf_ups_shipping_prod_name {
+        text-align: left !important;
+        width: 60%;
+    }
+
+    .sf_ups_shipping_prod_qty {
+        text-align: right !important;
+        width:  20%;
+    }
+
+    .sf_ups_shipping_packing_list_label table {
+        font-size: 24px !important;
+    }
+
+    .sf_ups_shipping_prod_size {
+        text-align: left !important;
+        width: 20%;
+    }
+    .sf_ups_shipping_prod_component {
+        left: 20%;
+        text-align: left;
+    }
+}
+
+.rotate90{
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+}

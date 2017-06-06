@@ -1,0 +1,659 @@
+//out: eatfit_custom.css
+@sourceGreen: #85c435;
+@sourceGray: #444;
+@sourceLightGray: #666;
+@sourceLightestGray: #999;
+
+/* Micro ClearFix Mixin */
+.clearfix {
+  zoom: 1;
+  &:before,
+  &:after {
+    content: "";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+
+}
+//hide footer junk.
+.footer-menu-wrap,
+.footer-hr,
+.footer_copyright_menu,
+#after_footer_payments {
+  display: none;
+}
+.logo {
+  color: #6e6e6e;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 40px;
+  font-family: 'Open Sans', sans-serif;
+  line-height: 30px;
+}
+.header-type-variant2,
+.header-type-variant6,
+.header-type-variant5 {
+  .logo {
+    display: block !important;
+  }
+
+}
+.fixed-header-area {
+  .logo {
+    font-size: 36px;
+    max-width: 150px;
+    margin: 5px;
+  }
+
+}
+
+h3.widget-title {
+  color: @sourceGreen;
+  font-weight: 600;
+  font-size: 24px;
+  text-align: center;
+}
+
+//hide breadcrumbs
+.woocommerce-breadcrumb, .back-to {
+  display:none;
+}
+
+div#breadcrumb {
+  display:none;
+}
+
+.variations_button {
+  padding-top:0;
+  margin-top:0;
+}
+
+//hide the sidebar on the products page for smaller screens
+@media only screen and (min-width: 768px) and (max-width: 979px) {
+
+
+  .post-type-archive-product {
+    .sidebar_grid {
+      float: none;
+      width: 100%;
+    }
+
+    #default_products_page_container,
+    .grid_content.with-sidebar-left,
+    .grid_content.with-sidebar-right {
+      width: 100%;
+      float: none;
+    }
+  }
+
+  .rock-product-slide .product-grid{
+    margin:13px!important;
+  }
+
+}
+@media only screen and (min-width: 1600px) {
+  .rock-product-slide .product-grid{
+    margin:11px!important;
+  }
+}
+
+//the sidebar shopping cart
+.sidebar_grid .widget_shopping_cart {
+  border: solid 3px @sourceGreen;
+  border-radius: 5px;
+  &.fixed-sidebar {
+    @media only screen and (min-width: 980px) {
+      position:fixed;
+      top:0;
+      // margin-left:-5px;
+      width:inherit;
+    }
+  }
+  ul.cart_list {
+    padding-right:10px;
+    max-height:590px;
+    min-width:200px;
+    overflow-y:auto;
+    overflow-x:hidden;
+    li {
+      width: 100%;
+      padding: 5px;
+
+      .clearfix();
+      //this anchor is the title!!!
+      > a {
+        float: none;
+        font-weight: 700;
+        font-size: 15px;
+        &:hover {
+          color: #444;
+        }
+
+      }
+
+      dl.variation {
+        width: 49%;
+        min-width: 120px;
+        dt {
+          display: none;
+          padding-right: 4px;
+        }
+        dd {
+          font-weight: 700;
+          font-size: 12px;
+          font-weight: bold;
+        }
+        dt,
+        dd {
+          text-transform: lowercase;
+          font-variant: small-caps;
+          float: left;
+          p {
+            margin-bottom: 0;
+            font-weight: 700;
+            font-size: 14px;
+            font-weight: bold;
+          }
+        }
+
+      }
+      .quantity {
+        float: right;
+      }
+    }
+
+  }
+  p.total,
+  p.buttons {
+    float: right;
+    .clearfix();
+    a:hover {
+      background-color: @sourceLightGray;
+    }
+  }
+
+}
+///the sidebar shopping cart & the up top shopping cart.
+.widget_shopping_cart {
+  padding: 10px;
+  //just hide the images.
+  img {
+    display: none;
+  }
+
+}
+/* slider headers*/
+.category-slider-products .food-slider .slider-title,
+.category-header .slider-title,
+.home .slider-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom:5px;
+
+}
+/*.product-grid is the individual product item */
+// @media only screen and (max-width: 479px) {
+//   .product-slide .product-grid .product-image div.img-wrapper {
+//     width: 100%;
+//   }
+// }
+.product-grid {
+  position: relative;
+  float: left;
+  margin-top: 20px;
+  // border: 1px solid @sourceGreen;
+  border: 0;
+  border-color: @sourceGreen;
+  border-bottom: 3px solid @sourceGreen !important;
+  box-shadow: 2px 3px 8px #888;
+  background: #fafafa;
+  &:hover {
+    box-shadow: 2px 3px 8px #555;
+  }
+  .product-image div.img-wrapper {
+    width: 100%;
+  }
+  .product-name {
+    position: relative;
+    display: block;
+    margin-top: 0;
+    width: 100%;
+    font-weight: 700;
+    text-align: center;
+    a {
+      color: @sourceGreen;
+      text-transform: uppercase;
+      font-weight: 300;
+      font-size: 15px;
+      line-height: 20px;
+      // -webkit-transition-timing-function:ease;
+      // -webkit-transition-duration:.2s;
+      // -webkit-transition-property:color;
+      font-weight: 700;
+      letter-spacing: -1px;
+      height: 22px;
+      display: block;
+    }
+
+  }
+  /* these are the regular/small buttons */
+  ul.product-variant-toplevel-options {
+    li {
+      float: left;
+      margin-top:-10px;
+    }
+    & > li.selected {
+      .button {
+        background-color: @sourceGreen;
+      }
+    }
+
+  }
+
+  .product-information {
+    padding-bottom:0;
+  }
+  /* nutrition block, add-to-cart, etc. */
+  div.product-variant-details {
+    display: none;
+    &.selected {
+      display: block;
+    }
+    /* the nutrition information */
+    .nutrition-block {
+      text-align: left;
+      legend {
+        font-weight: 900;
+        text-align:left;
+      }
+    }
+    a.added_to_cart.wc-forward {
+      clear: both;
+      display: block;
+      position: absolute;
+      right: 15px;
+    }
+    li.nutritionRow {
+      background: transparent;
+      text-align:left;
+      .value {
+        float: right;
+      }
+      &:nth-child(odd) {
+        background: #f1f1f1;
+      }
+    }
+    .priceRow {
+      margin-top: 5px;
+      text-align:left;
+      .price {
+        width:auto;
+        text-align: right;
+        float:right;
+        display: inline;
+        margin-top: 0 !important;
+      }
+    }
+    div.product-variant-cart {
+      text-align: right;
+    }
+    div.qty-block {
+      text-align: right;
+      label {display:none;}
+    }
+    .single_add_to_cart_button {
+      margin-top:0;
+    }
+    div.quantity {
+      // input {float:left;}
+      float:left;
+      button {
+        background:inherit;
+        color:@sourceLightestGray;
+        font-size:15px;
+        &:hover {
+          color:@sourceGray;
+        }
+      }
+      input.qty {
+        width:18px;
+        padding:2px 4px;
+        line-height:16px;
+        font-size:14px;
+        text-align:center;
+      }
+    }
+  }
+
+}
+.sprited(@url, @position) {
+  // background-image: url(@url);
+  // background-position: @position;
+  // background-repeat: no-repeat;
+  background:none;
+}
+@arrowSprite: "../images/qty-arrow-sprite.png";
+.quantity.buttons_added {
+
+  .minus {
+    .sprited(@arrowSprite,0 0);
+    &:hover {
+      .sprited(@arrowSprite,0 -33px);
+    }
+  }
+  .plus {
+    .sprited(@arrowSprite,-20px 0);
+    &:hover {
+      .sprited(@arrowSprite,-20px -33px);
+    }
+  }
+}
+.single_add_to_cart_button {
+  margin-top: 13px;
+}
+.widget_shopping_cart_content .amount,
+.widget_shopping_cart_content .onsale-price .price,
+.widget_shopping_cart_content .currentprice {
+  color: #000;
+  font-weight: 300;
+  font-size: 14px;
+
+}
+//no idea what this is for!
+.home .container.homecontainer {
+  text-align:center;
+  @media only screen and (max-width: 767px) and (min-width: 480px) {
+    p {width:80%;margin: 3px auto;}
+  }
+}
+
+
+/*
+*fix the slider height *\\
+*/
+.category-slider-products .food-slider .product-descr,
+.shortcode-products.products_grid .product-descr,
+.product-grid .product-descr,
+.products .product-descr {
+  display: block;
+  line-height:14px;
+  min-height:90px;
+  @media only screen and (max-width: 768px) and (min-width: 480px) {
+    font-size: 10px;
+    line-height: 13px
+  }
+
+}
+
+.addtocont {
+  margin-top: 0;
+
+}
+
+
+.rock-product-slide .product-grid{
+  margin:7px;
+}
+
+/* this is duplicated to override existing wp styles! sorry it's jank. */
+@media only screen and (max-width: 479px) {
+  body .food-slider.related .carousel,
+  body.home .food-slider .carousel,
+  body .category-slider-products .carousel {
+    height: auto !important;
+    margin-bottom: 15px;
+  }
+  //to fix the sliders on mobile:
+  .rock-product-slide{
+    width:97%!important;
+  }
+}
+@media only screen and (max-width: 767px) {
+  //to fix the sliders on mobile:
+  .rock-product-slide{
+    width:98%;
+  }
+
+
+  .food-slider .prev{
+    display:inline;
+    float:left!important;
+    width: 46%!important;
+    position:relative!important;
+    top:0px!important;
+    right:0px!important;
+  }
+  .food-slider .next{
+    display:inline;
+    float:right!important;
+    width: 46%!important;
+    position:relative!important;
+    top:0px!important;
+  }
+}
+body .food-slider.related .carousel,
+body.home .food-slider .carousel,
+body .category-slider-products .carousel {
+  height: auto !important;
+  margin-bottom: 15px;
+}
+
+
+
+/* header phone, hour message */
+.header-phone,
+.header-hours {
+  @media only screen and (max-width: 479px) {
+    display:block !important;
+  }
+  @media only screen and (max-width: 767px) and (min-width: 480px) {
+    display:inline !important;
+  }
+  margin-right: 10px;
+  a {
+    font-weight: bold;
+    &:hover {
+      color: #000;
+    }
+  }
+}
+/* the business hours table generated by the business hours plugin */
+div.businessHours {
+  h4 {
+    color: gray;
+    text-transform: uppercase;
+    font-weight: 300;
+    font-size: 14px;
+  }
+  table {
+    text-align: left;
+    width: auto;
+    td,
+    th {
+      padding: 1px 3px;
+    }
+    tr:nth-child(odd) {
+      background: #f1f1f1;
+    }
+  }
+
+}
+/*
+*FOOTER stuff
+*/
+.footer_block .textwidget p {
+    color:white;
+    a,span {
+    color:white;
+  }
+  &:hover {
+    color:@sourceGreen;
+    a,span {
+      color:@sourceGreen;
+    }
+  }
+}
+.footer-home span {
+  -webkit-transition: color 0.2s ease-in-out;
+  -moz-transition: color 0.2s ease-in-out;
+  -ms-transition: color 0.2s ease-in-out;
+  -o-transition: color 0.2s ease-in-out;
+  transition: color 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.footer-email i {
+  float: left;
+  font-size: 28px;
+  margin-right: 20px;
+  margin-top: 7px;
+  width: 25px;
+  height: 25px;
+}
+@media only screen and (max-width: 479px) {
+  .footer-home, .footer-phone, .footer-mail, .footer-email {
+    padding: 0 0 0 38px;
+    text-align: left;
+  }
+}
+.contact_info p span {
+  color:#444;
+  font-weight:normal;
+  font-size:12px;
+}
+
+/*
+*CHECKOUT
+*/
+.wc-checkout-totals th {
+  //so the price labels don't bump the prices
+  padding-right:8px;
+}
+.woocommerce-shipping-fields {
+  //hide the duplicate headers in the shipping tab of checkout
+  h3,h2 {display:none;}
+  #local-pickup-time-select,
+  #order_comments_field {.clearfix();}
+}
+.rock-product-slide{
+  display: inline-block;
+  white-space: normal;
+  padding: 0;
+}
+.rockSlider{
+  height:auto;
+  margin:0;
+  overflow:hidden;
+  white-space: nowrap;
+  margin:auto;
+}
+
+.food-slider .prev,.food-slider .next{
+  height:30px;
+  margin: 5px;
+  color:gray;
+  transition: 0.2s ease-in-out, background, border-color;
+}
+.food-slider .next {
+  background: #dbdbdb url(../images/qty_arrow_right_disabled.png) no-repeat center center;
+  display: inline-block;
+  width:30px;
+}
+.food-slider .prev {
+  background: #dbdbdb url(../images/qty_arrow_left_disabled.png) no-repeat center center;
+  display: inline-block;
+  width:30px;
+}
+
+.food-slider .next:hover{ background: url(../images/qty_arrow_right_disabled-white.png) no-repeat center center;}
+.food-slider .prev:hover{ background: url(../images/qty_arrow_left_disabled-white.png) no-repeat center center;}
+
+.food-slider .prev:hover,
+.food-slider .prev:focus,
+.food-slider .next:hover,
+.food-slider .next:focus {
+  background-color: #85c435
+}
+
+.slider-title{
+  float:left;
+}
+
+@media only screen and (min-width: 768px) {
+  .slideButtons{
+    float:right;
+  }
+}
+.loginButton{
+  float:left;
+}
+.startHidden,.hiddenInOurTheme{
+  display:none;
+}
+.woocommerce-error{
+  display:inline-block;
+}
+.titleRow{
+  @media only screen and (min-width: 768px) {
+    min-height:40px;
+  }
+  @media only screen and (max-width: 767px) {
+    min-height:98px;
+  }
+}
+#home_button {
+  text-align: center;
+  margin:15px;
+}
+#home_button {
+  @media only screen and (min-width: 480px) {
+    display:none;
+  }
+}
+#home_slider_container{
+  @media only screen and (max-width: 479px) {
+    display:none;
+  }
+}
+.woocommerce-billing-fields p,tab-billing p{
+  float: left;
+  padding: 2px 15px 2px 15px;
+  width: 250px;
+  font-weight: 300;
+  height: 67px;
+  margin: 0;
+  }
+#billing_company_field,.woocommerce-billing-fields p.theContinueParagraph{
+  width:100%;
+}
+#billing_country_field{
+  display:none;
+}
+.clear{
+  display:none;
+}
+.shiftRight{
+  margin-left:25px;
+}
+div.continueAsGuest{
+  margin-top:10px;
+}
+#fakeSubmitOrder{
+  float:left;
+}
+#place_order{
+  display:none!important;
+}
+.page-id-19 .col-2 {
+  @media only screen and (min-width: 768px) {
+    margin-top: -35px;
+  }
+
+}
+/* fixing some bootstrap stuff  */
+
+.homecontainer .span4{
+  float:left;
+}
