@@ -502,7 +502,14 @@ function google_place_pickup_time_shortcode( $atts ){
     return $dummy->pickup_time_select_for_place($a['place_key']);
 }
 add_shortcode('googleplace_pickup', 'google_place_pickup_time_shortcode');
+function me_map( ){
 
+
+    //require_once 'includes/Map.js';
+    include_once 'html/mymap.html';
+    //return $dummy->local_delivery_time_select_for_place();
+}
+add_shortcode('me_map', 'me_map');
 function google_place_delivery_time_shortcode( $atts ){
     $a = shortcode_atts( array(
         'place_key' => '',

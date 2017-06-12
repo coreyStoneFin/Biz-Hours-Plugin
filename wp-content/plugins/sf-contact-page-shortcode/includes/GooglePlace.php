@@ -10,6 +10,9 @@
 class GooglePlacesAPI {
 	public $apiKey = "AIzaSyDuHcLe6WbcD1qVmBfZ6OXT85XOT3oiscs";
 	public $base_endpoint = "https://maps.googleapis.com/maps/api/place/details/json?";
+    /**
+     * Test Stuff
+     */
 	public $places = array('ChIJ25W8z6SVlocR-FL6WmKVcsk', 'ChIJQ6XGdyqWlocRWz36iSuQkgY');
 	function Fetch_Place(){
 		$json = wp_remote_get($this->base_endpoint . 'placeid='. $this->places[0] . '&key='. $this->apiKey);
@@ -20,7 +23,9 @@ class GooglePlacesAPI {
 		$this->show_store_status_all($this->places[1]);
 		$this->get_condensed_store_hours($this->places[1]);
 	}
-
+    /**
+     * End Test Stuff
+     */
 	function get_place_hours($place){
 		$json = wp_remote_get($this->base_endpoint . 'placeid='. $place . '&key='. $this->apiKey);
 		$place_object = json_decode($json['body']);
