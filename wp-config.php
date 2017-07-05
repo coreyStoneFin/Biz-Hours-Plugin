@@ -20,13 +20,13 @@
 
 // ** MySQL settings ** //
 /** The name of the database for WordPress */
-define( 'DB_NAME', 'SEWP' );
+define( 'DB_NAME', 'bizhours' );
 
 /** MySQL database username */
-define( 'DB_USER', 'wp' );
+define( 'DB_USER', 'bizhours' );
 
 /** MySQL database password */
-define( 'DB_PASSWORD', 'wp' );
+define( 'DB_PASSWORD', 'N$7^1%L10royV6*j' );
 
 /** MySQL hostname */
 define( 'DB_HOST', 'localhost' );
@@ -35,8 +35,9 @@ define( 'DB_HOST', 'localhost' );
 define( 'DB_CHARSET', 'utf8' );
 
 /** The Database Collate type. Don't change this if in doubt. */
-define( 'DB_COLLATE', '' );
 
+define( 'DB_COLLATE', '' );
+define( 'WP_DEBUG', true );
 /**
  * Authentication Unique Keys and Salts.
  *
@@ -46,15 +47,14 @@ define( 'DB_COLLATE', '' );
  *
  * @since 2.6.0
  */
-define('AUTH_KEY',         '%_!eM@[kW[G)(+NXsq1G<Qm^e5+Bz41*t*SzYA|;4JMW)q,+~?N5)1S41+#$$6uy');
-define('SECURE_AUTH_KEY',  '{q.VEFY.r3}}u/Rj2=6GBDG1G0vXy3{aRL|2g/-Lr$onVK7ZiQh{u`v-5~7|og^S');
-define('LOGGED_IN_KEY',    ';9ZVDS$2Z`c7^(uhTRqYu-|u|_(~qV-e4]Mo&AgA(>{d^g(Q-CtWt}}< t.T-H8G');
-define('NONCE_KEY',        ':l{-PM4rdF1as+2Z&(CzNt3s!2o,=E8Z;>%L|:^Y_f_-a~0cR|ZTq-zPjP!BbO,o');
-define('AUTH_SALT',        '{(xYbHSNfO]K.-?qDU&h.sm3afSY0POyp1~K{{y|lo|.).$Rf}11!e|Q2&e7EItX');
-define('SECURE_AUTH_SALT', 'VB3[v-CjF<-PRqJMu97p/F@Kw[JrPuj8D|x2=RIV{CO`-#%Q}[Y1#h*tHvCPKWKa');
-define('LOGGED_IN_SALT',   'T-wR5d.D_^j|(Un.YORkbW~e/i)XQ<^P(<;zNXQU(|`.X9dc!mOX/!JU_zPO],$0');
-define('NONCE_SALT',       '~Lo}xL^bilLrTcS6:)SY$_-sqEMT&)//p]]|6(U(=PI2Lm`h*mH4)O.Y@%zP:$c<');
-
+define('AUTH_KEY',         '(a&?-ikocK`^d`O{mwh{a>>K5$d(qW|W! E8-$-]B=e0N.|N-LinR-4aUU2$SV&:');
+define('SECURE_AUTH_KEY',  '/P*#zM=WAbP5e:2zDi/d8gX<g({=rqnsXpDBDIa5y8p4E>Sp,Hmz-rT-jj22`BQq');
+define('LOGGED_IN_KEY',    'lougZHA_pEG&qhd~qvWpL/Jznv@7y<tRhh09LXpopL|M])a!sgw!+RB[TNT{+Fjq');
+define('NONCE_KEY',        '-aIMfVQ V)6fBQicd#h!@fN#{XX<taC{3dx_?/eM[+1a:hHN$LViT^MdRk@ae-**');
+define('AUTH_SALT',        'k^:<{baID/0<Wb&F=X:y:)ck-4(DV!==7.(tn_OQlXI^VFGLB+7VRX2$R5+.bO++');
+define('SECURE_AUTH_SALT', 'Z)vXBPSv1zvl<HWrswD+ V8}X-2aI!>dG +Uru4Ab8D>mBU2:Hu4HGTwsv>48-vX');
+define('LOGGED_IN_SALT',   'iZ_5eNkd+pa$7Q!M>VB!%+JngA<03XIt_?;?fCGXp>^V+RzdBDfZ:_|gtz&3?(I7');
+define('NONCE_SALT',       ':(>c;B/rFUbH@m{#7?(_wq*z11PNdJX-KH~$_e|~^8E+VDj1Y_+eOUukkrB8ln2r');
 
 /**
  * WordPress Database Table prefix.
@@ -65,7 +65,7 @@ define('NONCE_SALT',       '~Lo}xL^bilLrTcS6:)SY$_-sqEMT&)//p]]|6(U(=PI2Lm`h*mH4
 $table_prefix = 'wp_';
 
 
-if ( isset( $_SERVER['HTTP_HOST'] ) && preg_match('/^(SEWP.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', $_SERVER['HTTP_HOST'] ) ) {
+if ( isset( $_SERVER['HTTP_HOST'] ) && preg_match('/^(community_justice_league.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(.xip.io)\z/', $_SERVER['HTTP_HOST'] ) ) {
 define( 'WP_HOME', 'http://' . $_SERVER['HTTP_HOST'] );
 define( 'WP_SITEURL', 'http://' . $_SERVER['HTTP_HOST'] );
 }
