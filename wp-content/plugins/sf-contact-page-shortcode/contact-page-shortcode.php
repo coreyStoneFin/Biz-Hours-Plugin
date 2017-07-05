@@ -275,28 +275,39 @@ function giar_get_posts()
 
 
 //Store location custom post type
-function store_location_init()
-{
-    $args = array(
-        'label' => 'Store Locations',
-        'public' => false,
-        'show_ui' => true,
-//        'capability_type' => 'post',
-//        'hierarchical' => false,
-//        'rewrite' => array('slug' => 'store-locations'),
-//        'query_var' => true,
-        'menu_icon' => 'dashicons-video-alt',
-        'supports' => array(
-            'title',
-            'custom-fields',)
-    );
-    register_post_type('sf-store-locations', $args);
-}
+//function store_location_init()
+//{
+//    $args = array(
+//        'label' => 'Store Locations',
+//        'public' => false,
+//        'show_ui' => true,
+////        'capability_type' => 'post',
+////        'hierarchical' => false,
+////        'rewrite' => array('slug' => 'store-locations'),
+////        'query_var' => true,
+//        'menu_icon' => 'dashicons-video-alt',
+//        'supports' => array(
+//            'title',
+//            'custom-fields',)
+//    );
+//    register_post_type('sf-store-locations', $args);
+//}
 
 // add_action('init', 'store_location_init');
 /**
  * Something to do with creating a store location
  */
+
+// Add Admin Menu Tab
+function contactPageMenuItem(){
+    add_options_page('Store Locations','Store Locations','manage_options','contactPageMenuItem','contactpage_handler');
+}
+
+
+
+
+
+
 add_action('add_meta_boxes', 'add_events_metaboxes');
 
 function add_events_metaboxes()
