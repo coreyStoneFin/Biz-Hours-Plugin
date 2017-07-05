@@ -293,7 +293,7 @@ function store_location_init()
     register_post_type('sf-store-locations', $args);
 }
 
-add_action('init', 'store_location_init');
+// add_action('init', 'store_location_init');
 /**
  * Something to do with creating a store location
  */
@@ -484,7 +484,7 @@ function geocode($address)
 
 function google_place_shortcode($atts=[])
 {
-    include_once 'includes/GooglePlace.php';
+    include_once 'includes/GooglePlacesAPI.php';
     $GpApi = new GooglePlacesAPI();
     $GpApi->Fetch_Place();
 }
@@ -497,7 +497,7 @@ function google_place_pickup_time_shortcode($atts)
         'place_key' => '',
     ), $atts);
 
-    include_once 'includes/GooglePlace.php';
+    include_once 'includes/GooglePlacesAPI.php';
     $dummy = new GooglePlacesAPI();
     return $dummy->pickup_time_select_for_place($a['place_key']);
 }
@@ -519,7 +519,7 @@ function google_place_delivery_time_shortcode($atts)
         'place_key' => '',
     ), $atts);
 
-    include_once 'includes/GooglePlace.php';
+    include_once 'includes/GooglePlacesAPI.php';
     $dummy = new GooglePlacesAPI();
     return $dummy->local_delivery_time_select_for_place();
 }
@@ -532,7 +532,7 @@ function google_place_business_hours_shortcode($atts)
         'place_key' => '',
     ), $atts);
 
-    include_once 'includes/GooglePlace.php';
+    include_once 'includes/GooglePlacesAPI.php';
     $dummy = new GooglePlacesAPI();
     return $dummy->get_condensed_store_hours($a['place_key']);
 }
@@ -548,7 +548,7 @@ function google_place_business_status_shortcode($atts)
         'place_key' => '',
     ), $atts);
 
-    include_once 'includes/GooglePlace.php';
+    include_once 'includes/GooglePlacesAPI.php';
     $dummy = new GooglePlacesAPI();
     return $dummy->show_store_status($a['place_key']);
 }
