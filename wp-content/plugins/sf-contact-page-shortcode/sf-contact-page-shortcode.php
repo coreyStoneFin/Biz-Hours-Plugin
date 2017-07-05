@@ -300,9 +300,9 @@ function giar_get_posts()
 
 // Add Admin Menu Tab
 function contactPageMenuItem(){
-    add_options_page('Store Locations','Store Locations','manage_options','contactPageMenuItem','contactpage_handler');
+	add_menu_page('Store Locations','Store Locations','manage_options','contactPageMenuItem','contactpage_handler');
 }
-
+add_action( 'admin_menu', 'contactPageMenuItem' );
 
 
 
