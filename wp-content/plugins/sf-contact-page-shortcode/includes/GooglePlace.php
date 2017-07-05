@@ -7,6 +7,7 @@
  */
 
 class GooglePlace {
+	public $id;
     public $place_id;
     public $alt_ids;
     public $name;
