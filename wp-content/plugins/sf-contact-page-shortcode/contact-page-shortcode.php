@@ -77,7 +77,7 @@ function contactpage_handler($atts, $content = null)
                     )
                 );
 
-                foreach ( $query as $store_id => $store_location) {
+                foreach ($query as $store_id => $store_location) {
                     $store_locations[$store_location->post_title] = get_post_meta($store_location->ID, '_location', true);
 
                 } ?>
@@ -116,7 +116,7 @@ function contactpage_handler($atts, $content = null)
                             ]
                         };
 
-                        var myLatlngSrc = new Array(<?php echo '"'.implode('","',$store_locations).'"';?>);
+                        var myLatlngSrc = new Array(<?php echo '"' . implode('","', $store_locations) . '"';?>);
                         var myLatlngArray = new Array();
                         myLatlngSrc.forEach(function (element, index, array) {
 
@@ -193,13 +193,13 @@ function contactpage_handler($atts, $content = null)
                     <label for="contactName"><?php _e('Name', ETHEME_DOMAIN); ?> <span class="required">*</span></label>
                     <input type="text" class="contact_input required-field" name="contactName"/>
                     <label for="contactEmail"><?php _e('Email', ETHEME_DOMAIN); ?> <span
-                            class="required">*</span></label>
+                                class="required">*</span></label>
                     <input type="text" class="contact_input required-field" name="contactEmail"/>
                     <label for="contactSubject"><?php _e('Subject', ETHEME_DOMAIN); ?> <span
-                            class="required">*</span></label>
+                                class="required">*</span></label>
                     <input type="text" class="contact_input" name="contactSubject"/>
                     <label for="contactMessage"><?php _e('Message', ETHEME_DOMAIN); ?> <span
-                            class="required">*</span></label>
+                                class="required">*</span></label>
                     <textarea class="contact_textarea required-field" rows="10" cols="45"
                               name="contactMessage"></textarea>
 
@@ -272,9 +272,6 @@ function giar_get_posts()
     $response->header('Access-Control-Allow-Origin', apply_filters('giar_access_control_allow_origin', '*'));
     return $response;
 }
-
-
-
 
 
 //Store location custom post type
@@ -368,10 +365,10 @@ function wpt_events_location()
                     <label for="_orders_email" ' . $style . '>Orders Email:</label>
                     <input type="text" name="_orders_email" value="' . $oemail . '" title="Where orders are sent"/>
                     </br>
-                    <label for="_google_places_key" ' .$style . '>Google Place ID:</label>
+                    <label for="_google_places_key" ' . $style . '>Google Place ID:</label>
                     <input type="text" name="_google_places_key" value="' . $gpkey . '" title="Google Place ID"/>
                     </br>
-                    <label for="blah" '. $style . '>  </label>
+                    <label for="blah" ' . $style . '>  </label>
                     <span name="blah"><i>Find Place ID at <a href="https://developers.google.com/places/place-id">this</a> location</i></span>
                     </br>
                     
@@ -485,33 +482,40 @@ function geocode($address)
 //
 //}
 
-function google_place_shortcode() {
+function google_place_shortcode($atts=[])
+{
     include_once 'includes/GooglePlace.php';
-    $dummy = new GooglePlacesAPI();
-    return $dummy->Fetch_Place();
+    $GpApi = new GooglePlacesAPI();
+    $GpApi->Fetch_Place();
 }
+
 add_shortcode('googleplace', 'google_place_shortcode');
 
-function google_place_pickup_time_shortcode( $atts ){
-    $a = shortcode_atts( array(
+function google_place_pickup_time_shortcode($atts)
+{
+    $a = shortcode_atts(array(
         'place_key' => '',
-            ), $atts);
+    ), $atts);
 
     include_once 'includes/GooglePlace.php';
     $dummy = new GooglePlacesAPI();
     return $dummy->pickup_time_select_for_place($a['place_key']);
 }
+
 add_shortcode('googleplace_pickup', 'google_place_pickup_time_shortcode');
-function me_map( ){
+function me_map()
+{
 
 
     //require_once 'includes/Map.js';
     include_once 'html/mymap.html';
     //return $dummy->local_delivery_time_select_for_place();
 }
+
 add_shortcode('me_map', 'me_map');
-function google_place_delivery_time_shortcode( $atts ){
-    $a = shortcode_atts( array(
+function google_place_delivery_time_shortcode($atts)
+{
+    $a = shortcode_atts(array(
         'place_key' => '',
     ), $atts);
 
@@ -519,10 +523,12 @@ function google_place_delivery_time_shortcode( $atts ){
     $dummy = new GooglePlacesAPI();
     return $dummy->local_delivery_time_select_for_place();
 }
+
 add_shortcode('googleplace_delivery', 'google_place_delivery_time_shortcode');
 
-function google_place_business_hours_shortcode( $atts ){
-    $a = shortcode_atts( array(
+function google_place_business_hours_shortcode($atts)
+{
+    $a = shortcode_atts(array(
         'place_key' => '',
     ), $atts);
 
@@ -530,13 +536,15 @@ function google_place_business_hours_shortcode( $atts ){
     $dummy = new GooglePlacesAPI();
     return $dummy->get_condensed_store_hours($a['place_key']);
 }
+
 add_shortcode('googleplace_business_hours', 'google_place_business_hours_shortcode');
 /**
  * to use these shortcodes, must enter it like this
  * [tag attribute="the value"]some text[/tag]
  */
-function google_place_business_status_shortcode( $atts ){
-    $a = shortcode_atts( array(
+function google_place_business_status_shortcode($atts)
+{
+    $a = shortcode_atts(array(
         'place_key' => '',
     ), $atts);
 
@@ -544,5 +552,6 @@ function google_place_business_status_shortcode( $atts ){
     $dummy = new GooglePlacesAPI();
     return $dummy->show_store_status($a['place_key']);
 }
+
 add_shortcode('googleplace_business_status', 'google_place_business_status_shortcode');
 ?>
