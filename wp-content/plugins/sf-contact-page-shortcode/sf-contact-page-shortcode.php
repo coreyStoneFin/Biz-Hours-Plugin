@@ -459,10 +459,19 @@ function giar_get_posts() {
 
 // Add Admin Menu Tab
 function contactPageMenuItem() {
-	add_menu_page( 'Store Locations', 'Store Locations', 'manage_options', 'contactPageMenuItem', 'SFCP_addLocationForm' );
+	add_menu_page( 'Store Locations', 'Store Locations', 'manage_options', 'contactPageMenuItem', 'SFCP_listLocations' );
+	add_submenu_page(
+		"contactPageMenuItem",
+		"Add New Location",
+		"Add Location",
+		"manage_options",
+		"addContactPageMenuItem",
+		"SFCP_addLocationForm"
+	);
 }
 
 add_action( 'admin_menu', 'contactPageMenuItem' );
+
 add_action( 'add_meta_boxes', 'add_events_metaboxes' );
 
 function add_events_metaboxes() {
