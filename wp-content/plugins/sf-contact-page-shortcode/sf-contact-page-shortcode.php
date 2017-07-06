@@ -11,11 +11,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-define( "SFSL", "sfContactPageShortcode" );
-define( "SFSLTable", "sfsl_locations" );
-global $SFSL_db_version;
-$SFSL_db_version = '0.5';
-
+if(!defined("SFSLTable")){
+	include_once "includes/Constants.php";
+}
 
 add_action( 'wp_enqueue_scripts', 'locations_enqueue_styles' );
 function locations_enqueue_styles() {
@@ -365,7 +363,7 @@ function giar_get_posts() {
 
 // Add Admin Menu Tab
 function contactPageMenuItem() {
-	add_menu_page( 'Store Locations', 'All Locations', 'manage_options', 'contactPageMenuItem', 'SFCP_listLocationsPage' );
+	add_menu_page( 'Store Locations', 'Store Locations', 'manage_options', 'contactPageMenuItem', 'SFCP_listLocationsPage' );
 	add_submenu_page(
 		"contactPageMenuItem",
 		"Add New Location",

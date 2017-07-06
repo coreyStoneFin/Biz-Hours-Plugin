@@ -1,14 +1,9 @@
 <?php
-/**
- * User administration panel
- *
- * @package WordPress
- * @subpackage Administration
- * @since 1.0.0
- */
-
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 /** WordPress Administration Bootstrap */
-require_once( dirname( __FILE__ ) . '/admin.php' );
+require_once( ABSPATH. '/wp-admin/admin.php' );
 
 if ( ! current_user_can( 'list_users' ) ) {
 	wp_die(
@@ -17,11 +12,16 @@ if ( ! current_user_can( 'list_users' ) ) {
 		403
 	);
 }
+//Our class extends the WP_List_Table class, so we need to make sure that it's there
+if(!class_exists('WP_List_Table')){
+	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+}
+require_once "class-locations-list-table.php";
 
-$wp_list_table = _get_list_table('WP_Users_List_Table');
+$wp_list_table =new wp_locations_list_table();
 $pagenum = $wp_list_table->get_pagenum();
-$title = __('Users');
-$parent_file = 'users.php';
+$title = __('Locations');
+// $parent_file = 'users.php';
 
 add_screen_option( 'per_page' );
 
