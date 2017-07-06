@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-define("SFSL","sfContactPageShortcode");
+define( "SFSL", "sfContactPageShortcode" );
 global $SFSL_db_version;
 $SFSL_db_version = '0.5';
 
@@ -25,148 +25,150 @@ function locations_enqueue_styles() {
 
 //tell wordpress to register the demolistposts shortcode
 add_shortcode( "contact-page-shortcode", "contactpage_handler" );
-function SFCP_listLocations(){
+function SFCP_getLocations() {
+	$store_locations = array();
+	$query           = get_posts(
+		array(
+			'meta_value' => '',
+			'post_type'  => 'sf-store-locations'
+		)
+	);
+
+	foreach ( $query as $store_id => $store_location ) {
+		$store_locations[ $store_location->post_title ] = get_post_meta( $store_location->ID, '_location', true );
+
+	}
+}
+
+function SFCP_listLocations() {
 
 }
 
-function SFCP_addLocationForm(){
+function SFCP_addLocationForm() {
 	$ETHEME_DOMAIN = 'idstore';
-    ?>
-        <div class="span9 blog1_post contacts-page" id="blog_full_content">
-			<?php
-			if ( $a['gmap'] == 1 ):
-				$store_locations = array();
-				$query           = get_posts(
-					array(
-						'meta_value' => '',
-						'post_type'  => 'sf-store-locations'
-					)
-				);
+	?>
+    <div class="span9 blog1_post contacts-page" id="blog_full_content">
 
-				foreach ( $query as $store_id => $store_location ) {
-					$store_locations[ $store_location->post_title ] = get_post_meta( $store_location->ID, '_location', true );
-
-				} ?>
-                <div class="span9 blog1_post_image" id="map-image">
-                    <div id="map">
-                        <p>Enable your JavaScript!</p>
-                    </div>
-                </div>
-                <div class="clear"></div>
-                <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-                <script type="text/javascript">
-                    function etheme_google_map() {
-                        var styles = {
-                            '8theme': [{
-                                "featureType": "administrative",
-                                "stylers": [
-                                    {"visibility": "on"}
-                                ]
-                            },
-                                {
-                                    "featureType": "road",
-                                    "stylers": [
-                                        {"visibility": "on"},
-                                        {"hue": "#e78b8b"}
-                                    ]
-                                },
-                                {
-                                    "stylers": [
-                                        {"visibility": "on"},
-                                        {"hue": "#e78b8b"},
-                                        {"saturation": -50}
-                                    ]
-                                }
+        <div class="span9 blog1_post_image" id="map-image">
+            <div id="map">
+                <p>Enable your JavaScript!</p>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+        <script type="text/javascript">
+            function etheme_google_map() {
+                var styles = {
+                    '8theme': [{
+                        "featureType": "administrative",
+                        "stylers": [
+                            {"visibility": "on"}
+                        ]
+                    },
+                        {
+                            "featureType": "road",
+                            "stylers": [
+                                {"visibility": "on"},
+                                {"hue": "#e78b8b"}
                             ]
-                        };
-
-                        var myLatlngSrc = new Array(<?php echo '"' . implode( '","', $store_locations ) . '"';?>);
-                        var myLatlngArray = new Array();
-                        myLatlngSrc.forEach(function (element, index, array) {
-
-                            var latlng = element.split(',');
-                            latlng.forEach(function (item, index) {
-                                latlng[index] = parseFloat(item);
-                            });
-
-                            myLatlngArray.push(new google.maps.LatLng(latlng[0], latlng[1]));
-                        });
-
-                        var myOptions = {
-                            zoom: 17,
-                            center: myLatlngArray[0],
-                            mapTypeId: google.maps.MapTypeId.ROADMAP,
-                            disableDefaultUI: true,
-                            mapTypeId: '8theme',
-                            draggable: true,
-                            zoomControl: true,
-                            panControl: false,
-                            mapTypeControl: true,
-                            scaleControl: true,
-                            streetViewControl: true,
-                            overviewMapControl: true,
-                            scrollwheel: false,
-                            disableDoubleClickZoom: false
+                        },
+                        {
+                            "stylers": [
+                                {"visibility": "on"},
+                                {"hue": "#e78b8b"},
+                                {"saturation": -50}
+                            ]
                         }
-                        var map = new google.maps.Map(document.getElementById("map"), myOptions);
-                        var styledMapType = new google.maps.StyledMapType(styles['8theme'], {name: '8theme'});
-                        map.mapTypes.set('8theme', styledMapType);
-                        var bounds = new google.maps.LatLngBounds();
-                        var marker;
+                    ]
+                };
+                $store_locations = new Array();
+                var myLatlngSrc = new Array(<?php echo '"' . implode( '","', $store_locations ) . '"';?>);
+                var myLatlngArray = new Array();
+                myLatlngSrc.forEach(function (element, index, array) {
 
-                        myLatlngArray.forEach(function (element, index, array) {
-                            bounds.extend(element);
-                            marker = new google.maps.Marker({
-                                position: element,
-                                map: map,
-                                title: ""
-                            });
-                        });
-                        map.fitBounds(bounds);
-                    }
-                    jQuery(document).ready(function () {
-                        etheme_google_map();
+                    var latlng = element.split(',');
+                    latlng.forEach(function (item, index) {
+                        latlng[index] = parseFloat(item);
                     });
-                    jQuery(document).resize(function () {
-                        etheme_google_map();
+
+                    myLatlngArray.push(new google.maps.LatLng(latlng[0], latlng[1]));
+                });
+
+                var myOptions = {
+                    zoom: 17,
+                    center: myLatlngArray[0],
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    disableDefaultUI: true,
+                    mapTypeId: '8theme',
+                    draggable: true,
+                    zoomControl: true,
+                    panControl: false,
+                    mapTypeControl: true,
+                    scaleControl: true,
+                    streetViewControl: true,
+                    overviewMapControl: true,
+                    scrollwheel: false,
+                    disableDoubleClickZoom: false
+                }
+                var map = new google.maps.Map(document.getElementById("map"), myOptions);
+                var styledMapType = new google.maps.StyledMapType(styles['8theme'], {name: '8theme'});
+                map.mapTypes.set('8theme', styledMapType);
+                var bounds = new google.maps.LatLngBounds();
+                var marker;
+
+                myLatlngArray.forEach(function (element, index, array) {
+                    bounds.extend(element);
+                    marker = new google.maps.Marker({
+                        position: element,
+                        map: map,
+                        title: ""
                     });
-                </script>
-			<?php endif; ?>
-        </div>
-        <div class="contact-form">
-            <h1><?php the_title(); ?></h1>
-            <div id="contactsMsgs" class="clear"></div>
-            <div class="span4 contact_info">
-				<?php include( 'html/contact-page.php' ) ?>
-            </div>
-            <div class="span5 blog_full_review_container" id="contact_container">
-                <h2><?php _e( 'Contact Form', $ETHEME_DOMAIN ); ?></h2>
+                });
+                map.fitBounds(bounds);
+            }
+            jQuery(document).ready(function () {
+                etheme_google_map();
+            });
+            jQuery(document).resize(function () {
+                etheme_google_map();
+            });
+        </script>
 
-                <form action="<?php the_permalink(); ?>" method="POST" class="form" id="ethemeContactForm">
-                    <label for="contactName"><?php _e( 'Name', $ETHEME_DOMAIN ); ?> <span
-                                class="required">*</span></label>
-                    <input type="text" class="contact_input required-field" name="contactName"/>
-                    <label for="contactEmail"><?php _e( 'Email', $ETHEME_DOMAIN ); ?> <span
-                                class="required">*</span></label>
-                    <input type="text" class="contact_input required-field" name="contactEmail"/>
-                    <label for="contactSubject"><?php _e( 'Subject', $ETHEME_DOMAIN ); ?> <span
-                                class="required">*</span></label>
-                    <input type="text" class="contact_input" name="contactSubject"/>
-                    <label for="contactMessage"><?php _e( 'Message', $ETHEME_DOMAIN ); ?> <span
-                                class="required">*</span></label>
-                    <textarea class="contact_textarea required-field" rows="10" cols="45"
-                              name="contactMessage"></textarea>
-
-                    <div id="contact_button">
-                        <button class="button fl-r" name="contactSubmit" type="submit">
-                            <span><?php _e( 'Send Request', $ETHEME_DOMAIN ); ?></span></button>
-                        <div class="contactSpinner"></div>
-                    </div>
-                </form>
-            </div>
-            <div class="clear"></div>
+    </div>
+    <div class="contact-form">
+        <h1><?php the_title(); ?></h1>
+        <div id="contactsMsgs" class="clear"></div>
+        <div class="span4 contact_info">
+			<?php include( 'html/contact-page.php' ) ?>
         </div>
-		<?php
+        <div class="span5 blog_full_review_container" id="contact_container">
+            <h2><?php _e( 'Location Form', $ETHEME_DOMAIN ); ?></h2>
+
+            <form action="<?php the_permalink(); ?>" method="POST" class="form" id="ethemeContactForm">
+                <label for="contactName"><?php _e( 'Name', $ETHEME_DOMAIN ); ?> <span
+                            class="required">*</span></label>
+                <input type="text" class="contact_input required-field" name="contactName"/>
+                <label for="contactEmail"><?php _e( 'Email', $ETHEME_DOMAIN ); ?> <span
+                            class="required">*</span></label>
+                <input type="text" class="contact_input required-field" name="contactEmail"/>
+                <label for="contactSubject"><?php _e( 'Subject', $ETHEME_DOMAIN ); ?> <span
+                            class="required">*</span></label>
+                <input type="text" class="contact_input" name="contactSubject"/>
+                <label for="contactMessage"><?php _e( 'Message', $ETHEME_DOMAIN ); ?> <span
+                            class="required">*</span></label>
+                <textarea class="contact_textarea required-field" rows="10" cols="45"
+                          name="contactMessage"></textarea>
+
+                <div id="contact_button">
+                    <button class="button fl-r" name="contactSubmit" type="submit">
+                        <span><?php _e( 'Send Request', $ETHEME_DOMAIN ); ?></span></button>
+                    <div class="contactSpinner"></div>
+                </div>
+            </form>
+        </div>
+        <div class="clear"></div>
+    </div>
+	<?php
 
 }
 
@@ -749,11 +751,11 @@ function google_place_business_status_shortcode( $atts ) {
 
 add_shortcode( 'googleplace_business_status', 'google_place_business_status_shortcode' );
 
-function sfslInstall(){
+function sfslInstall() {
 	global $wpdb;
 	global $SFSL_db_version;
 
-	$table_name = $wpdb->prefix . '_locations';
+	$table_name      = $wpdb->prefix . '_locations';
 	$charset_collate = $wpdb->get_charset_collate();
 
 	$sql = "CREATE TABLE $table_name (
@@ -779,9 +781,6 @@ function sfslInstall(){
 
 	add_option( 'SFSL_db_version', $SFSL_db_version );
 }
-
-
-
 
 
 ?>
