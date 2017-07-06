@@ -41,13 +41,9 @@ function SFCP_getLocations() {
 }
 
 function SFCP_listLocations() {
-
+    ?>
 }
-
-function SFCP_addLocationForm() {
-	$ETHEME_DOMAIN = 'idstore';
-	?>
-    <div class="span9 blog1_post contacts-page" id="blog_full_content">
+ <div class="span9 blog1_post contacts-page" id="blog_full_content">
 
         <div class="span9 blog1_post_image" id="map-image">
             <div id="map">
@@ -135,6 +131,12 @@ function SFCP_addLocationForm() {
         </script>
 
     </div>
+    <?php
+}
+
+function SFCP_addLocationForm() {
+	$ETHEME_DOMAIN = 'idstore';
+	?>
     <div class="contact-form">
         <h1><?php the_title(); ?></h1>
         <div id="contactsMsgs" class="clear"></div>
