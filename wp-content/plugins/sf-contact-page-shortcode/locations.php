@@ -2,8 +2,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-/** WordPress Administration Bootstrap */
-require_once( ABSPATH. '/wp-admin/admin.php' );
 
 if ( ! current_user_can( 'list_users' ) ) {
 	wp_die(
