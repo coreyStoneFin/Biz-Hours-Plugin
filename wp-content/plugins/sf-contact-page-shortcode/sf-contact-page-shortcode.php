@@ -41,7 +41,11 @@ function SFCP_getLocations() {
 }
 
 function SFCP_listLocationsPage() {
-	include_once ("locations.php");
+    try {
+	    include_once( "locations.php" );
+    }catch (Exception $e){
+        var_dump($e);
+    }
 }
 
 function SFCP_addLocationForm() {
