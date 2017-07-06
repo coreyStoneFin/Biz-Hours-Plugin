@@ -43,101 +43,7 @@ function SFCP_getLocations() {
 }
 
 function SFCP_listLocations() {
-	?>
-    }
-    <div class="span9 blog1_post contacts-page" id="blog_full_content">
-
-        <div class="span9 blog1_post_image" id="map-image">
-            <div id="map">
-                <p>Enable your JavaScript!</p>
-            </div>
-        </div>
-        <div class="clear"></div>
-        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-        <script type="text/javascript">
-            function etheme_google_map() {
-                var styles = {
-                    '8theme': [{
-                        "featureType": "administrative",
-                        "stylers": [
-                            {"visibility": "on"}
-                        ]
-                    },
-                        {
-                            "featureType": "road",
-                            "stylers": [
-                                {"visibility": "on"},
-                                {"hue": "#e78b8b"}
-                            ]
-                        },
-                        {
-                            "stylers": [
-                                {"visibility": "on"},
-                                {"hue": "#e78b8b"},
-                                {"saturation": -50}
-                            ]
-                        }
-                    ]
-                };
-                $store_locations = new Array();
-                var myLatlngSrc = new Array(<?php echo '"' . implode( '","', $store_locations ) . '"';?>);
-                var myLatlngArray = new Array();
-                myLatlngSrc.forEach(function (element, index, array) {
-
-                    var latlng = element.split(',');
-                    latlng.forEach(function (item, index) {
-                        latlng[index] = parseFloat(item);
-                    });
-
-                    myLatlngArray.push(new google.maps.LatLng(latlng[0], latlng[1]));
-                });
-
-                var myOptions = {
-                    zoom: 17,
-                    center: myLatlngArray[0],
-                    mapTypeId: google.maps.MapTypeId.ROADMAP,
-                    disableDefaultUI: true,
-                    mapTypeId: '8theme',
-                    draggable: true,
-                    zoomControl: true,
-                    panControl: false,
-                    mapTypeControl: true,
-                    scaleControl: true,
-                    streetViewControl: true,
-                    overviewMapControl: true,
-                    scrollwheel: false,
-                    disableDoubleClickZoom: false
-                }
-                var map = new google.maps.Map(document.getElementById("map"), myOptions);
-                var styledMapType = new google.maps.StyledMapType(styles['8theme'], {name: '8theme'});
-                map.mapTypes.set('8theme', styledMapType);
-                var bounds = new google.maps.LatLngBounds();
-                var marker;
-
-                myLatlngArray.forEach(function (element, index, array) {
-                    bounds.extend(element);
-                    marker = new google.maps.Marker({
-                        position: element,
-                        map: map,
-                        title: ""
-                    });
-                });
-                map.fitBounds(bounds);
-            }
-            jQuery(document).ready(function () {
-                etheme_google_map();
-            });
-            jQuery(document).resize(function () {
-                etheme_google_map();
-            });
-        </script>
-
-    </div>
-
-    <div class="span4 contact_info">
-		<?php include( 'html/contact-page.php' ) ?>
-    </div>
-	<?php
+	include_once ("locations.php");
 }
 
 function SFCP_addLocationForm() {
@@ -459,7 +365,7 @@ function giar_get_posts() {
 
 // Add Admin Menu Tab
 function contactPageMenuItem() {
-	add_menu_page( 'Store Locations', 'Store Locations', 'manage_options', 'contactPageMenuItem', 'SFCP_listLocations' );
+	add_menu_page( 'Store Locations', 'All Locations', 'manage_options', 'contactPageMenuItem', 'SFCP_listLocations' );
 	add_submenu_page(
 		"contactPageMenuItem",
 		"Add New Location",
