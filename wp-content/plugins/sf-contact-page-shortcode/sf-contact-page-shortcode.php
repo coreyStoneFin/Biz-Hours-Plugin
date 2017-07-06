@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( "SFSL", "sfContactPageShortcode" );
+define( "SFSLTable", "sfsl_locations" );
 global $SFSL_db_version;
 $SFSL_db_version = '0.5';
 
@@ -767,7 +768,7 @@ function sfslInstall() {
 	global $wpdb;
 	global $SFSL_db_version;
 
-	$table_name      = $wpdb->prefix . '_sfsl_locations';
+	$table_name      = $wpdb->prefix . SFSLTable;
 	$charset_collate = $wpdb->get_charset_collate();
 
 	$sql = "CREATE TABLE $table_name (
