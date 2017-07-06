@@ -11,9 +11,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+
 define( "SFSL", "sfContactPageShortcode" );
 global $SFSL_db_version;
 $SFSL_db_version = '0.5';
+// Install or Update the Table
+register_activation_hook( __FILE__, 'sfslInstall' );
 
 add_action( 'wp_enqueue_scripts', 'locations_enqueue_styles' );
 function locations_enqueue_styles() {
@@ -145,20 +148,33 @@ function SFCP_addLocationForm() {
         <h2><?php _e( 'Location Form', $ETHEME_DOMAIN ); ?></h2>
 
         <form action="<?php the_permalink(); ?>" method="POST" class="form" id="ethemeContactForm">
-            <label for="contactName"><?php _e( 'Name', $ETHEME_DOMAIN ); ?> <span
-                        class="required">*</span></label>
-            <input type="text" class="contact_input required-field" name="contactName"/>
-            <label for="contactEmail"><?php _e( 'Email', $ETHEME_DOMAIN ); ?> <span
-                        class="required">*</span></label>
-            <input type="text" class="contact_input required-field" name="contactEmail"/>
-            <label for="contactSubject"><?php _e( 'Subject', $ETHEME_DOMAIN ); ?> <span
-                        class="required">*</span></label>
-            <input type="text" class="contact_input" name="contactSubject"/>
-            <label for="contactMessage"><?php _e( 'Message', $ETHEME_DOMAIN ); ?> <span
-                        class="required">*</span></label>
-            <textarea class="contact_textarea required-field" rows="10" cols="45"
-                      name="contactMessage"></textarea>
-
+            <div>
+                <label for="locationName">
+					<?php _e( 'Location Name', $ETHEME_DOMAIN ); ?>
+                    <span class="required">*</span>
+                </label>
+                <input type="text" class="contact_input required-field" name="locationName"/>
+            </div>
+            <div>
+                <label for="contactEmail">
+					<?php _e( 'Email', $ETHEME_DOMAIN ); ?>
+                    <span class="required">*</span>
+                </label>
+                <input type="text" class="contact_input required-field" name="contactEmail"/>
+            </div>
+            <div>
+                <label for="contactSubject">
+					<?php _e( 'Subject', $ETHEME_DOMAIN ); ?>
+                    <span class="required">*</span></label>
+                <input type="text" class="contact_input" name="contactSubject"/>
+            </div>
+            <div>
+                <label for="contactMessage">
+                    <?php _e( 'Message', $ETHEME_DOMAIN ); ?>
+                    <span class="required">*</span>
+                </label>
+                <textarea class="contact_textarea required-field" rows="10" cols="45" name="contactMessage"></textarea>
+            </div>
             <div id="contact_button">
                 <button class="button fl-r" name="contactSubmit" type="submit">
                     <span><?php _e( 'Send Request', $ETHEME_DOMAIN ); ?></span></button>
@@ -753,7 +769,7 @@ function sfslInstall() {
 	global $wpdb;
 	global $SFSL_db_version;
 
-	$table_name      = $wpdb->prefix . '_locations';
+	$table_name      = $wpdb->prefix . '_sfsl_locations';
 	$charset_collate = $wpdb->get_charset_collate();
 
 	$sql = "CREATE TABLE $table_name (
