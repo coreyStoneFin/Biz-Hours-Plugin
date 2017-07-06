@@ -42,7 +42,7 @@ function SFCP_getLocations() {
 	}
 }
 
-function SFCP_listLocations() {
+function SFCP_listLocationsPage() {
 	include_once ("locations.php");
 }
 
@@ -365,7 +365,7 @@ function giar_get_posts() {
 
 // Add Admin Menu Tab
 function contactPageMenuItem() {
-	add_menu_page( 'Store Locations', 'All Locations', 'manage_options', 'contactPageMenuItem', 'SFCP_listLocations' );
+	add_menu_page( 'Store Locations', 'All Locations', 'manage_options', 'contactPageMenuItem', 'SFCP_listLocationsPage' );
 	add_submenu_page(
 		"contactPageMenuItem",
 		"Add New Location",
