@@ -10,10 +10,7 @@ if ( ! current_user_can( 'list_users' ) ) {
 		403
 	);
 }
-//Our class extends the WP_List_Table class, so we need to make sure that it's there
-if(!class_exists('WP_List_Table')){
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-}
+
 require_once "class-locations-list-table.php";
 
 $wp_list_table =new wp_locations_list_table();

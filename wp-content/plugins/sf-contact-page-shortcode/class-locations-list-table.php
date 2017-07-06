@@ -1,8 +1,17 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
+//Our class extends the WP_List_Table class, so we need to make sure that it's there
+if(!class_exists('WP_List_Table')){
+	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+}
+
 if ( ! defined( "SFSLTable" ) ) {
 	include_once "includes/Constants.php";
 }
-
 
 class wp_locations_list_table extends WP_List_Table {
 	/**
