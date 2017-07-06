@@ -41,9 +41,9 @@ function SFCP_getLocations() {
 }
 
 function SFCP_listLocations() {
-    ?>
-}
- <div class="span9 blog1_post contacts-page" id="blog_full_content">
+	?>
+    }
+    <div class="span9 blog1_post contacts-page" id="blog_full_content">
 
         <div class="span9 blog1_post_image" id="map-image">
             <div id="map">
@@ -131,44 +131,40 @@ function SFCP_listLocations() {
         </script>
 
     </div>
-    <?php
+
+    <div class="span4 contact_info">
+		<?php include( 'html/contact-page.php' ) ?>
+    </div>
+	<?php
 }
 
 function SFCP_addLocationForm() {
 	$ETHEME_DOMAIN = 'idstore';
 	?>
-    <div class="contact-form">
-        <h1><?php the_title(); ?></h1>
-        <div id="contactsMsgs" class="clear"></div>
-        <div class="span4 contact_info">
-			<?php include( 'html/contact-page.php' ) ?>
-        </div>
-        <div class="span5 blog_full_review_container" id="contact_container">
-            <h2><?php _e( 'Location Form', $ETHEME_DOMAIN ); ?></h2>
+    <div class="span5 blog_full_review_container" id="contact_container">
+        <h2><?php _e( 'Location Form', $ETHEME_DOMAIN ); ?></h2>
 
-            <form action="<?php the_permalink(); ?>" method="POST" class="form" id="ethemeContactForm">
-                <label for="contactName"><?php _e( 'Name', $ETHEME_DOMAIN ); ?> <span
-                            class="required">*</span></label>
-                <input type="text" class="contact_input required-field" name="contactName"/>
-                <label for="contactEmail"><?php _e( 'Email', $ETHEME_DOMAIN ); ?> <span
-                            class="required">*</span></label>
-                <input type="text" class="contact_input required-field" name="contactEmail"/>
-                <label for="contactSubject"><?php _e( 'Subject', $ETHEME_DOMAIN ); ?> <span
-                            class="required">*</span></label>
-                <input type="text" class="contact_input" name="contactSubject"/>
-                <label for="contactMessage"><?php _e( 'Message', $ETHEME_DOMAIN ); ?> <span
-                            class="required">*</span></label>
-                <textarea class="contact_textarea required-field" rows="10" cols="45"
-                          name="contactMessage"></textarea>
+        <form action="<?php the_permalink(); ?>" method="POST" class="form" id="ethemeContactForm">
+            <label for="contactName"><?php _e( 'Name', $ETHEME_DOMAIN ); ?> <span
+                        class="required">*</span></label>
+            <input type="text" class="contact_input required-field" name="contactName"/>
+            <label for="contactEmail"><?php _e( 'Email', $ETHEME_DOMAIN ); ?> <span
+                        class="required">*</span></label>
+            <input type="text" class="contact_input required-field" name="contactEmail"/>
+            <label for="contactSubject"><?php _e( 'Subject', $ETHEME_DOMAIN ); ?> <span
+                        class="required">*</span></label>
+            <input type="text" class="contact_input" name="contactSubject"/>
+            <label for="contactMessage"><?php _e( 'Message', $ETHEME_DOMAIN ); ?> <span
+                        class="required">*</span></label>
+            <textarea class="contact_textarea required-field" rows="10" cols="45"
+                      name="contactMessage"></textarea>
 
-                <div id="contact_button">
-                    <button class="button fl-r" name="contactSubmit" type="submit">
-                        <span><?php _e( 'Send Request', $ETHEME_DOMAIN ); ?></span></button>
-                    <div class="contactSpinner"></div>
-                </div>
-            </form>
-        </div>
-        <div class="clear"></div>
+            <div id="contact_button">
+                <button class="button fl-r" name="contactSubmit" type="submit">
+                    <span><?php _e( 'Send Request', $ETHEME_DOMAIN ); ?></span></button>
+                <div class="contactSpinner"></div>
+            </div>
+        </form>
     </div>
 	<?php
 
