@@ -11,12 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-
 define( "SFSL", "sfContactPageShortcode" );
 global $SFSL_db_version;
 $SFSL_db_version = '0.5';
-// Install or Update the Table
-register_activation_hook( __FILE__, 'sfslInstall' );
+
 
 add_action( 'wp_enqueue_scripts', 'locations_enqueue_styles' );
 function locations_enqueue_styles() {
@@ -796,5 +794,6 @@ function sfslInstall() {
 	add_option( 'SFSL_db_version', $SFSL_db_version );
 }
 
-
+// Install or Update the Table
+register_activation_hook( __FILE__, 'sfslInstall' );
 ?>
