@@ -199,7 +199,7 @@ class wp_locations_list_table extends WP_List_Table {
 		}
 
 		//Open the line
-		$r = "<tr id='user-$location_object->id'>";
+		$r = "<tr id='location-$location_object->id'>";
 
 		//Get the columns registered in the get_columns and get_sortable_columns methods
 		list( $columns, $hidden, $sortable, $primary ) = $this->get_column_info();
@@ -221,51 +221,52 @@ class wp_locations_list_table extends WP_List_Table {
 
 			$attributes = "class='$classes' $data";
 
-			if ( 'cb' === $column_name ) {
-				$r .= "<th scope='row' class='check-column'>$checkbox</th>";
-			} else {
 				$r .= "<td $attributes>";
 				switch ( $column_name ) {
-					case 'username':
-						$r .= "$avatar $edit";
+					//id, place_id,  alt_ids,  name,  geometry,  address1,  address2,  city,  province,  country,  postal
+					case 'id':
+						$r .= $location_object->id;
 						break;
 					case 'name':
-						$r .= "$user_object->first_name $user_object->last_name";
+						$r .= $location_object->name;
 						break;
-					case 'email':
-						$r .= "<a href='" . esc_url( "mailto:$email" ) . "'>$email</a>";
+					case 'address1':
+						$r .= $location_object->address1;
 						break;
-					case 'role':
-						$r .= esc_html( $roles_list );
+					case 'address2':
+						$r .= $location_object->address2;
 						break;
-					case 'posts':
-						if ( $numposts > 0 ) {
-							$r .= "<a href='edit.php?author=$user_object->ID' class='edit'>";
-							$r .= '<span aria-hidden="true">' . $numposts . '</span>';
-							$r .= '<span class="screen-reader-text">' . sprintf( _n( '%s post by this author', '%s posts by this author', $numposts ), number_format_i18n( $numposts ) ) . '</span>';
-							$r .= '</a>';
-						} else {
-							$r .= 0;
-						}
+					case 'city':
+						$r .= $location_object->city;
 						break;
+					case 'province':
+						$r .= $location_object->province;
+						break;
+					case 'country':
+						$r .= $location_object->country;
+						break;
+					case 'postal':
+						$r .= $location_object->postal;
+						break;
+					case 'place_id':
+						$r .= $location_object->place_id;
+						break;
+					case 'geometry':
+						$r .= $location_object->geometry;
+						break;
+					case 'alt_ids':
+						$r .= $location_object->alt_ids;
+						break;
+
 					default:
-						/**
-						 * Filters the display output of custom columns in the Users list table.
-						 *
-						 * @since 2.8.0
-						 *
-						 * @param string $output Custom column output. Default empty.
-						 * @param string $column_name Column name.
-						 * @param int $user_id ID of the currently-listed user.
-						 */
-						$r .= apply_filters( 'manage_users_custom_column', '', $column_name, $user_object->ID );
+						
 				}
 
 				if ( $primary === $column_name ) {
 					//	$r .= $this->row_actions( $actions );
 				}
 				$r .= "</td>";
-			}
+
 		}
 		$r .= '</tr>';
 
