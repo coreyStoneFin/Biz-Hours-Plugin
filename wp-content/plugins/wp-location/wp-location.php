@@ -40,58 +40,42 @@ function SFCP_getLocations() {
 	}
 }
 
-function SFCP_listLocationsPage() {
-    try {
-	    include_once( "pages/wp-locations-view.php" );
-    }catch (Exception $e){
-        var_dump($e);
-    }
+function wp_locations_view() {
+	try {
+		require_once( "pages/wp-locations-view.php" );
+	}catch (Exception $e){
+		var_dump($e);
+	}
 }
 
-function SFCP_addLocationForm() {
-	$ETHEME_DOMAIN = 'idstore';
-	?>
-    <div class="span5 blog_full_review_container" id="contact_container">
-        <h2><?php _e( 'Location Form', $ETHEME_DOMAIN ); ?></h2>
-
-        <form action="<?php the_permalink(); ?>" method="POST" class="form" id="ethemeContactForm">
-            <div>
-                <label for="locationName">
-					<?php _e( 'Location Name', $ETHEME_DOMAIN ); ?>
-                    <span class="required">*</span>
-                </label>
-                <input type="text" class="contact_input required-field" name="locationName"/>
-            </div>
-            <div>
-                <label for="contactEmail">
-					<?php _e( 'Email', $ETHEME_DOMAIN ); ?>
-                    <span class="required">*</span>
-                </label>
-                <input type="text" class="contact_input required-field" name="contactEmail"/>
-            </div>
-            <div>
-                <label for="contactSubject">
-					<?php _e( 'Subject', $ETHEME_DOMAIN ); ?>
-                    <span class="required">*</span></label>
-                <input type="text" class="contact_input" name="contactSubject"/>
-            </div>
-            <div>
-                <label for="contactMessage">
-                    <?php _e( 'Message', $ETHEME_DOMAIN ); ?>
-                    <span class="required">*</span>
-                </label>
-                <textarea class="contact_textarea required-field" rows="10" cols="45" name="contactMessage"></textarea>
-            </div>
-            <div id="contact_button">
-                <button class="button fl-r" name="contactSubmit" type="submit">
-                    <span><?php _e( 'Send Request', $ETHEME_DOMAIN ); ?></span></button>
-                <div class="contactSpinner"></div>
-            </div>
-        </form>
-    </div>
-	<?php
-
+function wp_locations_add() {
+	try {
+		require_once( "pages/wp-locations-new.php" );
+	}catch (Exception $e){
+		var_dump($e);
+	}
 }
+
+function wp_locations_edit($location_id) {
+	try {
+		require_once( "pages/wp-locations-edit.php" );
+	}catch (Exception $e){
+		var_dump($e);
+	}
+}
+
+function wp_locations_save() {
+	if ( !current_user_can( 'manage_options' ) )
+	{
+		wp_die( 'You are not allowed to be on this page.' );
+	}
+	// Check that nonce field
+	check_admin_referer( 'jk_op_verify' );
+
+	$options = get_option( 'jk_op_array' );
+}
+
+add_action( 'admin_post_wp_locations_save', 'wp_locations_save' );
 
 function contactpage_handler( $atts ) {
 	/**
@@ -367,14 +351,14 @@ function giar_get_posts() {
 
 // Add Admin Menu Tab
 function contactPageMenuItem() {
-	add_menu_page( 'Store Locations', 'Store Locations', 'manage_options', 'contactPageMenuItem', 'SFCP_listLocationsPage' );
+	add_menu_page( 'Store Locations', 'Store Locations', 'manage_options', 'contactPageMenuItem', 'wp_locations_view' );
 	add_submenu_page(
 		"contactPageMenuItem",
 		"Add New Location",
 		"Add Location",
 		"manage_options",
 		"addContactPageMenuItem",
-		"SFCP_addLocationForm"
+		"wp_locations_add"
 	);
 }
 

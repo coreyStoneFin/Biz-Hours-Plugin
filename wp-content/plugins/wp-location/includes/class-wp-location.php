@@ -19,7 +19,7 @@ class wp_location {
     // State
     public $province;
     // Country
-    public $country="US";
+    public $country="United States";
     // Zip
     public $postalCode;
     public $opening_hours;
