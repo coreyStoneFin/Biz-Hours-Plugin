@@ -158,6 +158,127 @@ switch ( $wp_list_table->current_action() ) {
 			), wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
 			exit;
 		}
+
+		if ( $wp_list_table->current_action() && ! empty( $_REQUEST['users'] ) ) {
+			$userids  = $_REQUEST['users'];
+			$sendback = wp_get_referer();
+
+			/** This action is documented in wp-admin/edit-comments.php */
+			$sendback = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $sendback, $wp_list_table->current_action(), $userids );
+
+			wp_safe_redirect( $sendback );
+			exit;
+		}
+
+		$wp_list_table->prepare_items();
+		$total_pages = $wp_list_table->get_pagination_arg( 'total_pages' );
+		if ( $pagenum > $total_pages && $total_pages > 0 ) {
+			wp_redirect( add_query_arg( 'paged', $total_pages ) );
+			exit;
+		}
+
+		include_once( ABSPATH . 'wp-admin/admin-header.php' );
+
+		$messages = array();
+		if ( isset( $_GET['update'] ) ) :
+			switch ( $_GET['update'] ) {
+				case 'del':
+				case 'del_many':
+					$delete_count = isset( $_GET['delete_count'] ) ? (int) $_GET['delete_count'] : 0;
+					if ( 1 == $delete_count ) {
+						$message = __( 'User deleted.' );
+					} else {
+						$message = _n( '%s user deleted.', '%s users deleted.', $delete_count );
+					}
+					$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' . sprintf( $message, number_format_i18n( $delete_count ) ) . '</p></div>';
+					break;
+				case 'add':
+					if ( isset( $_GET['id'] ) && ( $user_id = $_GET['id'] ) && current_user_can( 'edit_user', $user_id ) ) {
+						/* translators: %s: edit page url */
+						$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' . sprintf( __( 'New user created. <a href="%s">Edit user</a>' ),
+								esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ),
+									self_admin_url( 'user-edit.php?user_id=' . $user_id ) ) ) ) . '</p></div>';
+					} else {
+						$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' . __( 'New user created.' ) . '</p></div>';
+					}
+					break;
+				case 'promote':
+					$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' . __( 'Changed roles.' ) . '</p></div>';
+					break;
+				case 'err_admin_role':
+					$messages[] = '<div id="message" class="error notice is-dismissible"><p>' . __( 'The current user&#8217;s role must have user editing capabilities.' ) . '</p></div>';
+					$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' . __( 'Other user roles have been changed.' ) . '</p></div>';
+					break;
+				case 'err_admin_del':
+					$messages[] = '<div id="message" class="error notice is-dismissible"><p>' . __( 'You can&#8217;t delete the current user.' ) . '</p></div>';
+					$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' . __( 'Other users have been deleted.' ) . '</p></div>';
+					break;
+				case 'remove':
+					$messages[] = '<div id="message" class="updated notice is-dismissible fade"><p>' . __( 'User removed from this site.' ) . '</p></div>';
+					break;
+				case 'err_admin_remove':
+					$messages[] = '<div id="message" class="error notice is-dismissible"><p>' . __( "You can't remove the current user." ) . '</p></div>';
+					$messages[] = '<div id="message" class="updated notice is-dismissible fade"><p>' . __( 'Other users have been removed.' ) . '</p></div>';
+					break;
+			}
+		endif; ?>
+
+		<?php if ( isset( $errors ) && is_wp_error( $errors ) ) : ?>
+        <div class="error">
+            <ul>
+				<?php
+				foreach ( $errors->get_error_messages() as $err ) {
+					echo "<li>$err</li>\n";
+				}
+				?>
+            </ul>
+        </div>
+	<?php endif;
+
+		if ( ! empty( $messages ) ) {
+			foreach ( $messages as $msg ) {
+				echo $msg;
+			}
+		} ?>
+
+        <div class="wrap">
+            <h1 class="wp-heading-inline"><?php
+				echo esc_html( $title );
+				?></h1>
+
+			<?php
+			if ( current_user_can( 'create_users' ) ) { ?>
+                <a href="<?php echo admin_url( 'user-new.php' ); ?>"
+                   class="page-title-action"><?php echo esc_html_x( 'Add New', 'user' ); ?></a>
+			<?php } elseif ( is_multisite() && current_user_can( 'promote_users' ) ) { ?>
+                <a href="<?php echo admin_url( 'user-new.php' ); ?>"
+                   class="page-title-action"><?php echo esc_html_x( 'Add Existing', 'user' ); ?></a>
+			<?php }
+
+			if ( !empty( $usersearch ) ) {
+				/* translators: %s: search keywords */
+				printf( '<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', esc_html( $usersearch ) );
+			}
+			?>
+
+            <hr class="wp-header-end">
+
+			<?php $wp_list_table->views(); ?>
+
+            <form method="get">
+
+				<?php $wp_list_table->search_box( __( 'Search Users' ), 'user' ); ?>
+
+				<?php if ( ! empty( $_REQUEST['role'] ) ) { ?>
+                    <input type="hidden" name="role" value="<?php echo esc_attr( $_REQUEST['role'] ); ?>"/>
+				<?php } ?>
+
+				<?php $wp_list_table->display(); ?>
+            </form>
+
+            <br class="clear"/>
+        </div>
+		<?php
 		break;
 
 } // end of the $doaction switch
