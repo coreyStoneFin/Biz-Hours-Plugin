@@ -68,11 +68,52 @@ class wp_locations_list_table extends WP_List_Table {
 	}
 
 	/**
+	 * Get a list of all, hidden and sortable columns, with filter applied
+	 *
+	 * @return array
+	 */
+	public function get_column_info() {
+		if ( ! isset( $this->_column_headers ) ) {
+			$columns = get_columns();
+			$hidden = get_hidden_columns( $this->screen );
+
+			$sortable_columns = $this->get_sortable_columns();
+			/**
+			 * Filters the list table sortable columns for a specific screen.
+			 *
+			 * The dynamic portion of the hook name, `$this->screen->id`, refers
+			 * to the ID of the current screen, usually a string.
+			 *
+			 * @since 3.5.0
+			 *
+			 * @param array $sortable_columns An array of sortable columns.
+			 */
+			$_sortable = apply_filters( "manage_{$this->screen->id}_sortable_columns", $sortable_columns );
+
+			$sortable = array();
+			foreach ( $_sortable as $id => $data ) {
+				if ( empty( $data ) )
+					continue;
+
+				$data = (array) $data;
+				if ( !isset( $data[1] ) )
+					$data[1] = false;
+
+				$sortable[$id] = $data;
+			}
+
+			$primary = $this->get_primary_column_name();
+			$this->_column_headers = array( $columns, $hidden, $sortable, $primary );
+		}
+
+		return $this->_column_headers;
+	}
+	/**
 	 * Prepare the table with different parameters, pagination, columns and table elements
 	 */
 	public function prepare_items() {
-		global $wpdb, $column_headers;
-		$screen = get_current_screen();
+		global $wpdb;
+	//	$screen = get_current_screen();
 
 		/* -- Preparing your query -- */
 		$query = "SELECT  id, place_id,  alt_ids,  name,  geometry,  address1,  address2,  city,  province,  country,  postal FROM " . $wpdb->prefix . SFSLTable;
@@ -117,8 +158,8 @@ class wp_locations_list_table extends WP_List_Table {
 		//The pagination links are automatically built according to those parameters
 
 		/* -- Register the Columns -- */
-		 $columns                           = $this->get_columns();
-		 $column_headers[ $screen->id ] = $columns;
+	//	 $columns                           = $this->get_columns();
+	//	 $_wp_column_headers[ $screen->id ] = $columns;
 
 		/* -- Fetch the items -- */
 		$this->items = $wpdb->get_results( $query );
