@@ -11,7 +11,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 //Our class extends the WP_List_Table class, so we need to make sure that it's there
 if ( ! class_exists( 'GooglePlace' ) ) {
 	require_once( 'includes/GooglePlace.php' );
-	require_once( 'includes/GooglePlaceAPI.php' );
+	require_once( 'includes/GooglePlacesAPI.php' );
 }
 
 if ( ! defined( "SFSLTable" ) ) {
@@ -71,11 +71,11 @@ class wp_locations_list_table extends WP_List_Table {
 	 * Prepare the table with different parameters, pagination, columns and table elements
 	 */
 	public function prepare_items() {
-		global $wpdb, $_wp_column_headers;
+		global $wpdb, $column_headers;
 		$screen = get_current_screen();
 
 		/* -- Preparing your query -- */
-		$query = "SELECT  id, place_id,  alt_ids,  name,  geometry,  address1,  address2,  city,  province,  country,  postal" . $wpdb->prefix . SFSLTable;
+		$query = "SELECT  id, place_id,  alt_ids,  name,  geometry,  address1,  address2,  city,  province,  country,  postal FROM " . $wpdb->prefix . SFSLTable;
 
 		/* -- Ordering parameters -- */
 		//Parameters that are going to be used to order the result
@@ -117,8 +117,8 @@ class wp_locations_list_table extends WP_List_Table {
 		//The pagination links are automatically built according to those parameters
 
 		/* -- Register the Columns -- */
-		$columns                           = $this->get_columns();
-		$_wp_column_headers[ $screen->id ] = $columns;
+		 $columns                           = $this->get_columns();
+		 $column_headers[ $screen->id ] = $columns;
 
 		/* -- Fetch the items -- */
 		$this->items = $wpdb->get_results( $query );
@@ -137,7 +137,6 @@ class wp_locations_list_table extends WP_List_Table {
 		//Get the records registered in the prepare_items method
 		$records = $this->items;
 
-		//Get the columns registered in the get_columns and get_sortable_columns methods
 		// list( $columns, $hidden ) = $this->get_column_info();
 
 		//Loop for each record
@@ -149,6 +148,10 @@ class wp_locations_list_table extends WP_List_Table {
 		}
 	}
 
+	protected function get_default_primary_column_name() {
+		return 'id';
+	}
+
 	public function single_row( $location_object, $style = '', $role = '', $numposts = 0 ) {
 		if ( ! ( $location_object instanceof GooglePlace ) ) {
 			$location_object = $this->get_location( $location_object );
@@ -157,6 +160,7 @@ class wp_locations_list_table extends WP_List_Table {
 		//Open the line
 		$r = "<tr id='user-$location_object->id'>";
 
+		//Get the columns registered in the get_columns and get_sortable_columns methods
 		list( $columns, $hidden, $sortable, $primary ) = $this->get_column_info();
 
 		foreach ( $columns as $column_name => $column_display_name ) {
