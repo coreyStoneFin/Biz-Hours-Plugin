@@ -681,7 +681,7 @@ function google_place_business_status_shortcode( $atts ) {
 
 add_shortcode( 'googleplace_business_status', 'google_place_business_status_shortcode' );
 
-function sfslInstall() {
+function wpLocationInstall() {
 	global $wpdb;
 	global $wp_location_db_version;
 
@@ -709,9 +709,9 @@ function sfslInstall() {
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta( $sql );
 
-	add_option( 'SFSL_db_version', $wp_location_db_version );
+	add_option( 'wp_location_db_version', $wp_location_db_version );
 }
 
 // Install or Update the Table
-register_activation_hook( __FILE__, 'sfslInstall' );
+register_activation_hook( __FILE__, 'wpLocationInstall' );
 ?>

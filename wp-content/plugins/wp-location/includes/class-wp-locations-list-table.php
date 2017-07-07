@@ -13,7 +13,7 @@ if ( ! class_exists( 'wp_location' ) ) {
 	require_once( 'class-wp-location.php' );
 }
 
-if ( ! defined( "SFSLTable" ) ) {
+if ( ! defined( "wpLocationTable" ) ) {
 	include_once "Constants.php";
 }
 
@@ -277,7 +277,6 @@ class wp_locations_list_table extends WP_List_Table {
 			return $object;
 		}
 
-		// $query = "SELECT  id, place_id,  alt_ids,  name,  geometry,  address1,  address2,  city,  province,  country,  postal" . $wpdb->prefix . SFSLTable;
 		$gp = new wp_location();
 		if ( is_array( $object ) ) {
 			if ( array_key_exists( 'id', $object ) ) {
