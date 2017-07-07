@@ -132,7 +132,7 @@ class wp_locations_list_table extends WP_List_Table {
 			foreach ( $records as $rec ) {
 
 				//Open the line
-				echo '< tr id="record_' . $rec->link_id . '">';
+				echo '< tr id="record_' . $rec->id . '">';
 				foreach ( $columns as $column_name => $column_display_name ) {
 
 					//Style attributes for each col
@@ -144,7 +144,7 @@ class wp_locations_list_table extends WP_List_Table {
 					$attributes = $class . $style;
 
 					//edit link
-					$editlink = '/wp-admin/link.php?action=edit&link_id=' . (int) $rec->link_id;
+					$editlink = '/wp-admin/link.php?action=edit&link_id=' . (int) $rec->id;
 
 					//Display the cell
 					switch ( $column_name ) {
