@@ -1,11 +1,11 @@
 <?php
 /*
-Plugin Name: StoneFin Additional Store Support
+Plugin Name: StoneFin Location Support
 Plugin URI: http://www.reallyeffective.co.uk/knowledge-base
-Description: StoneFin Additional Store Support
+Description: StoneFin Location Support
 Version: 0.1 BETA
-Author: Jeff Wesely
-Author URI: http://www.reallyeffective.co.uk
+Author: Jeff Wesely, Corey Wesely, Joe Echtenkamp
+Author URI: https://www.stonefin.com
 */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
