@@ -11,7 +11,7 @@ if ( ! current_user_can( 'list_users' ) ) {
 	);
 }
 
-require_once "../includes/class-wp-locations-list-table.php";
+require_once plugin_dir_path( __FILE__ )."../includes/class-wp-locations-list-table.php";
 
 $wp_list_table = new wp_locations_list_table();
 $pagenum       = $wp_list_table->get_pagenum();

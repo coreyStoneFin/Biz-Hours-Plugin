@@ -10,7 +10,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 //Our class extends the WP_List_Table class, so we need to make sure that it's there
 if ( ! class_exists( 'wp_location' ) ) {
-	require_once( 'class-wp-location.php.php' );
+	require_once( 'class-wp-location.php' );
 }
 
 if ( ! defined( "SFSLTable" ) ) {
@@ -115,7 +115,7 @@ class wp_locations_list_table extends WP_List_Table {
 	//	$screen = get_current_screen();
 
 		/* -- Preparing your query -- */
-		$query = "SELECT  id, place_id,  alt_ids,  name,  geometry,  address1,  address2,  city,  province,  country,  postal FROM " . $wpdb->prefix . SFSLTable;
+		$query = "SELECT  id, place_id,  alt_ids,  name,  geometry,  address1,  address2,  city,  province,  country,  postal FROM " . $wpdb->prefix . wpLocationTable;
 
 		/* -- Ordering parameters -- */
 		//Parameters that are going to be used to order the result
