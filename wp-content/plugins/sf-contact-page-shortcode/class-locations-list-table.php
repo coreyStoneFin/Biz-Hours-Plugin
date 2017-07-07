@@ -5,8 +5,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 //Our class extends the WP_List_Table class, so we need to make sure that it's there
-if(!class_exists('WP_List_Table')){
+if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+}
+//Our class extends the WP_List_Table class, so we need to make sure that it's there
+if ( ! class_exists( 'GooglePlace' ) ) {
+	require_once( 'includes/GooglePlace.php' );
+	require_once( 'includes/GooglePlaceAPI.php' );
 }
 
 if ( ! defined( "SFSLTable" ) ) {
@@ -18,7 +23,7 @@ class wp_locations_list_table extends WP_List_Table {
 	 * Constructor, we override the parent to pass our own arguments
 	 * We usually focus on three parameters: singular and plural labels, as well as whether the class supports AJAX.
 	 */
-	function __construct( $args = array() ) {
+	public function __construct( $args = array() ) {
 		parent::__construct( array(
 			'singular' => 'wp_location', //Singular label
 			'plural'   => 'wp_locations', //plural label, also this well be one of the table css class
@@ -31,18 +36,20 @@ class wp_locations_list_table extends WP_List_Table {
 	 * Define the columns that are going to be used in the table
 	 * @return array $columns, the array of columns to use with the table
 	 */
-	function get_columns() {
-		return $columns = array(
-			'col_id'       => __( 'ID' ),
-			'col_name'     => __( 'Name' ),
-			'col_address1' => __( 'Address1' ),
-			'col_address2' => __( 'Address2' ),
-			'col_city'     => __( 'City' ),
-			'col_province' => __( 'State' ),
-			'col_country'  => __( 'Country' ),
-			'col_postal'   => __( 'Postal Code' ),
-			'col_geometry' => __( 'Geometry' )
+	public function get_columns() {
+		$columns = array(
+			'id'       => __( 'ID' ),
+			'name'     => __( 'Name' ),
+			'address1' => __( 'Address1' ),
+			'address2' => __( 'Address2' ),
+			'city'     => __( 'City' ),
+			'province' => __( 'State' ),
+			'country'  => __( 'Country' ),
+			'postal'   => __( 'Postal Code' ),
+			'geometry' => __( 'Geometry' )
 		);
+
+		return $columns;
 	}
 
 	/**
@@ -50,23 +57,25 @@ class wp_locations_list_table extends WP_List_Table {
 	 * @return array $sortable, the array of columns that can be sorted by the user
 	 */
 	public function get_sortable_columns() {
-		return $sortable = array(
-			'col_id'       => 'id',
-			'col_name'     => 'name',
-			'col_city'     => 'city',
-			'col_province' => 'province'
+		$sortable = array(
+			'id'       => 'id',
+			'name'     => 'name',
+			'city'     => 'city',
+			'province' => 'province'
 		);
+
+		return $sortable;
 	}
 
 	/**
 	 * Prepare the table with different parameters, pagination, columns and table elements
 	 */
-	function prepare_items() {
+	public function prepare_items() {
 		global $wpdb, $_wp_column_headers;
 		$screen = get_current_screen();
 
 		/* -- Preparing your query -- */
-		$query = "SELECT * FROM " . $wpdb->prefix . SFSLTable;
+		$query = "SELECT  id, place_id,  alt_ids,  name,  geometry,  address1,  address2,  city,  province,  country,  postal" . $wpdb->prefix . SFSLTable;
 
 		/* -- Ordering parameters -- */
 		//Parameters that are going to be used to order the result
@@ -115,72 +124,173 @@ class wp_locations_list_table extends WP_List_Table {
 		$this->items = $wpdb->get_results( $query );
 	}
 
+	public function no_items() {
+		_e( 'No Locations found.' );
+	}
+
 	/**
 	 * Display the rows of records in the table
 	 * @return string, echo the markup of the rows
 	 */
-	function display_rows() {
+	public function display_rows() {
 
 		//Get the records registered in the prepare_items method
 		$records = $this->items;
 
 		//Get the columns registered in the get_columns and get_sortable_columns methods
-		list( $columns, $hidden ) = $this->get_column_info();
+		// list( $columns, $hidden ) = $this->get_column_info();
 
 		//Loop for each record
 		if ( ! empty( $records ) ) {
-			foreach ( $records as $rec ) {
+			foreach ( $records as $recId => $rec ) {
+				echo PHP_EOL . "\t" . $this->single_row( $rec );
 
-				//Open the line
-				echo '< tr id="record_' . $rec->id . '">';
-				foreach ( $columns as $column_name => $column_display_name ) {
-
-					//Style attributes for each col
-					$class = "class='$column_name column-$column_name'";
-					$style = "";
-					if ( in_array( $column_name, $hidden ) ) {
-						$style = ' style="display:none;"';
-					}
-					$attributes = $class . $style;
-
-					//edit link
-					$editlink = '/wp-admin/link.php?action=edit&link_id=' . (int) $rec->id;
-
-					//Display the cell
-					switch ( $column_name ) {
-						case "col_id":
-							echo '< td ' . $attributes . '>' . stripslashes( $rec->id ) . '< /td>';
-							break;
-						case "col_name":
-							echo '< td ' . $attributes . '>' . stripslashes( $rec->name ) . '7< /td>';
-							break;
-						case "col_address1":
-							echo '< td ' . $attributes . '>' . stripslashes( $rec->address1 ) . '< /td>';
-							break;
-						case "col_address2":
-							echo '< td ' . $attributes . '>' . stripslashes( $rec->address2 ) . '< /td>';
-							break;
-						case "col_city":
-							echo '< td ' . $attributes . '>' . stripslashes( $rec->city ) . '< /td>';
-							break;
-						case "col_province":
-							echo '< td ' . $attributes . '>' . stripslashes( $rec->province ) . '< /td>';
-							break;
-						case "col_country":
-							echo '< td ' . $attributes . '>' . stripslashes( $rec->country ) . '< /td>';
-							break;
-						case "col_postal":
-							echo '< td ' . $attributes . '>' . stripslashes( $rec->postal ) . '< /td>';
-							break;
-						case "col_geometry":
-							echo '< td ' . $attributes . '>' . stripslashes( $rec->geometry ) . '< /td>';
-							break;
-					}
-				}
-
-				//Close the line
-				echo '< /tr>';
 			}
 		}
+	}
+
+	public function single_row( $location_object, $style = '', $role = '', $numposts = 0 ) {
+		if ( ! ( $location_object instanceof GooglePlace ) ) {
+			$location_object = $this->get_location( $location_object );
+		}
+
+		//Open the line
+		$r = "<tr id='user-$location_object->id'>";
+
+		list( $columns, $hidden, $sortable, $primary ) = $this->get_column_info();
+
+		foreach ( $columns as $column_name => $column_display_name ) {
+			$classes = "$column_name column-$column_name";
+			if ( $primary === $column_name ) {
+				$classes .= ' has-row-actions column-primary';
+			}
+			if ( 'posts' === $column_name ) {
+				$classes .= ' num'; // Special case for that column
+			}
+
+			if ( in_array( $column_name, $hidden ) ) {
+				$classes .= ' hidden';
+			}
+
+			$data = 'data-colname="' . wp_strip_all_tags( $column_display_name ) . '"';
+
+			$attributes = "class='$classes' $data";
+
+			if ( 'cb' === $column_name ) {
+				$r .= "<th scope='row' class='check-column'>$checkbox</th>";
+			} else {
+				$r .= "<td $attributes>";
+				switch ( $column_name ) {
+					case 'username':
+						$r .= "$avatar $edit";
+						break;
+					case 'name':
+						$r .= "$user_object->first_name $user_object->last_name";
+						break;
+					case 'email':
+						$r .= "<a href='" . esc_url( "mailto:$email" ) . "'>$email</a>";
+						break;
+					case 'role':
+						$r .= esc_html( $roles_list );
+						break;
+					case 'posts':
+						if ( $numposts > 0 ) {
+							$r .= "<a href='edit.php?author=$user_object->ID' class='edit'>";
+							$r .= '<span aria-hidden="true">' . $numposts . '</span>';
+							$r .= '<span class="screen-reader-text">' . sprintf( _n( '%s post by this author', '%s posts by this author', $numposts ), number_format_i18n( $numposts ) ) . '</span>';
+							$r .= '</a>';
+						} else {
+							$r .= 0;
+						}
+						break;
+					default:
+						/**
+						 * Filters the display output of custom columns in the Users list table.
+						 *
+						 * @since 2.8.0
+						 *
+						 * @param string $output Custom column output. Default empty.
+						 * @param string $column_name Column name.
+						 * @param int $user_id ID of the currently-listed user.
+						 */
+						$r .= apply_filters( 'manage_users_custom_column', '', $column_name, $user_object->ID );
+				}
+
+				if ( $primary === $column_name ) {
+					//	$r .= $this->row_actions( $actions );
+				}
+				$r .= "</td>";
+			}
+		}
+		$r .= '</tr>';
+
+		return $r;
+	}
+
+	protected function get_location( $object ) {
+		if ( $object instanceof GooglePlace ) {
+			return $object;
+		}
+
+		// $query = "SELECT  id, place_id,  alt_ids,  name,  geometry,  address1,  address2,  city,  province,  country,  postal" . $wpdb->prefix . SFSLTable;
+		$gp = new GooglePlace();
+		if ( is_array( $object ) ) {
+			if ( array_key_exists( 'id', $object ) ) {
+				$gp->id       = $object["id"];
+				$gp->place_id = $object["place_id"];
+				$gp->alt_ids  = $object["alt_ids"];
+				$gp->name     = $object["name"];
+				$gp->geometry = $object["geometry"];
+				$gp->address1 = $object["address1"];
+				$gp->address2 = $object["address2"];
+				$gp->city     = $object["city"];
+				$gp->province = $object["province"];
+				$gp->country  = $object["country"];
+				$gp->postal   = $object["postal"];
+			} else {
+				$gp->id       = $object[0];
+				$gp->place_id = $object[1];
+				$gp->alt_ids  = $object[2];
+				$gp->name     = $object[2];
+				$gp->geometry = $object[3];
+				$gp->address1 = $object[4];
+				$gp->address2 = $object[5];
+				$gp->city     = $object[6];
+				$gp->province = $object[7];
+				$gp->country  = $object[8];
+				$gp->postal   = $object[9];
+			}
+		}
+		if ( is_object( $object ) ) {
+			$gp->id       = $object->id;
+			$gp->place_id = $object->place_id;
+			$gp->alt_ids  = $object->alt_ids;
+			$gp->name     = $object->name;
+			$gp->geometry = $object->geometry;
+			$gp->address1 = $object->address1;
+			$gp->address2 = $object->address2;
+			$gp->city     = $object->city;
+			$gp->province = $object->province;
+			$gp->country  = $object->country;
+			$gp->postal   = $object->postal;
+		}
+
+		return $gp;
+	}
+
+	protected function get_bulk_actions() {
+		$actions = array();
+
+		if ( is_multisite() ) {
+			if ( current_user_can( 'remove_users' ) ) {
+				$actions['remove'] = __( 'Remove' );
+			}
+		} else {
+			if ( current_user_can( 'delete_users' ) ) {
+				$actions['delete'] = __( 'Delete' );
+			}
+		}
+
+		return $actions;
 	}
 }
