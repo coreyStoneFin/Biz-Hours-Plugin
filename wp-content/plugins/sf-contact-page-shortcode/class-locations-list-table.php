@@ -74,7 +74,7 @@ class wp_locations_list_table extends WP_List_Table {
 	 */
 	public function get_column_info() {
 		if ( ! isset( $this->_column_headers ) ) {
-			$columns = get_columns();
+			$columns = $this->get_columns();
 			$hidden = get_hidden_columns( $this->screen );
 
 			$sortable_columns = $this->get_sortable_columns();
@@ -259,7 +259,7 @@ class wp_locations_list_table extends WP_List_Table {
 						break;
 
 					default:
-						
+
 				}
 
 				if ( $primary === $column_name ) {

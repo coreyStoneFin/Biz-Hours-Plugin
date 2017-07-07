@@ -267,7 +267,7 @@ switch ( $wp_list_table->current_action() ) {
 
             <form method="get">
 
-				<?php $wp_list_table->search_box( __( 'Search Users' ), 'user' ); ?>
+				<?php $wp_list_table->search_box( __( 'Search Locations' ), 'location' ); ?>
 
 				<?php if ( ! empty( $_REQUEST['role'] ) ) { ?>
                     <input type="hidden" name="role" value="<?php echo esc_attr( $_REQUEST['role'] ); ?>"/>
