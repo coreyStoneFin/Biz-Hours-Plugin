@@ -693,7 +693,7 @@ function sfslInstall() {
 	place_id TEXT NULL,
 	alt_ids TEXT NULL,
 	name VARCHAR(255) NOT NULL,
-	geometry GEOMETRY NOT NULL,
+	geometry GEOMETRY NULL,
 	address1 VARCHAR(255) NOT NULL,
 	address2 VARCHAR(255) NULL DEFAULT NULL,
 	city VARCHAR(255) NOT NULL,
