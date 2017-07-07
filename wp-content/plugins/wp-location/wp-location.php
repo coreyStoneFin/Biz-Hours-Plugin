@@ -42,7 +42,7 @@ function SFCP_getLocations() {
 
 function SFCP_listLocationsPage() {
     try {
-	    include_once( "locations.php" );
+	    include_once( "pages/wp-locations-view.php" );
     }catch (Exception $e){
         var_dump($e);
     }

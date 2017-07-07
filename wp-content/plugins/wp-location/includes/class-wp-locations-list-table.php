@@ -9,13 +9,12 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 //Our class extends the WP_List_Table class, so we need to make sure that it's there
-if ( ! class_exists( 'GooglePlace' ) ) {
-	require_once( 'includes/GooglePlace.php' );
-	require_once( 'includes/GooglePlacesAPI.php' );
+if ( ! class_exists( 'wp_location' ) ) {
+	require_once( 'class-wp-location.php.php' );
 }
 
 if ( ! defined( "SFSLTable" ) ) {
-	include_once "includes/Constants.php";
+	include_once "Constants.php";
 }
 
 class wp_locations_list_table extends WP_List_Table {

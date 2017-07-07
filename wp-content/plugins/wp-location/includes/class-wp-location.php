@@ -6,7 +6,7 @@
  * Time: 12:13 PM
  */
 
-class GooglePlace {
+class wp_location {
 	public $id;
     public $place_id;
     public $alt_ids;

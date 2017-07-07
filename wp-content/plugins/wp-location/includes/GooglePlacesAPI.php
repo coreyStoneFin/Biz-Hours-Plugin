@@ -6,7 +6,6 @@
  * Date: 1/4/2017
  * Time: 12:13 PM
  */
-require_once "GooglePlace.php";
 
 class GooglePlacesAPI {
 	public $apiKey = "AIzaSyDuHcLe6WbcD1qVmBfZ6OXT85XOT3oiscs";
