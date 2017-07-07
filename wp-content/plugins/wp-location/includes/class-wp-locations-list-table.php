@@ -193,7 +193,7 @@ class wp_locations_list_table extends WP_List_Table {
 	}
 
 	public function single_row( $location_object, $style = '', $role = '', $numposts = 0 ) {
-		if ( ! ( $location_object instanceof GooglePlace ) ) {
+		if ( ! ( $location_object instanceof wp_location ) ) {
 			$location_object = $this->get_location( $location_object );
 		}
 
@@ -273,12 +273,12 @@ class wp_locations_list_table extends WP_List_Table {
 	}
 
 	protected function get_location( $object ) {
-		if ( $object instanceof GooglePlace ) {
+		if ( $object instanceof wp_location ) {
 			return $object;
 		}
 
 		// $query = "SELECT  id, place_id,  alt_ids,  name,  geometry,  address1,  address2,  city,  province,  country,  postal" . $wpdb->prefix . SFSLTable;
-		$gp = new GooglePlace();
+		$gp = new wp_location();
 		if ( is_array( $object ) ) {
 			if ( array_key_exists( 'id', $object ) ) {
 				$gp->id       = $object["id"];
