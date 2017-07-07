@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if(!defined("SFSLTable")){
+if(!defined("wpLocationTable")){
 	include_once "includes/Constants.php";
 }
 
@@ -683,9 +683,9 @@ add_shortcode( 'googleplace_business_status', 'google_place_business_status_shor
 
 function sfslInstall() {
 	global $wpdb;
-	global $SFSL_db_version;
+	global $wp_location_db_version;
 
-	$table_name      = $wpdb->prefix . SFSLTable;
+	$table_name      = $wpdb->prefix . wpLocationTable;
 	$charset_collate = $wpdb->get_charset_collate();
 
 	$sql = "CREATE TABLE $table_name (
@@ -709,7 +709,7 @@ function sfslInstall() {
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta( $sql );
 
-	add_option( 'SFSL_db_version', $SFSL_db_version );
+	add_option( 'SFSL_db_version', $wp_location_db_version );
 }
 
 // Install or Update the Table

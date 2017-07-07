@@ -1,6 +1,5 @@
 <?php
 
-define( "SFSL", "sfContactPageShortcode" );
-define( "SFSLTable", "sfsl_locations" );
-global $SFSL_db_version;
-$SFSL_db_version = '0.5';
+define( "wpLocationTable", "locations" );
+global $wp_location_db_version;
+$wp_location_db_version = '0.5';
