@@ -115,7 +115,7 @@ class wp_locations_list_table extends WP_List_Table {
 	//	$screen = get_current_screen();
 
 		/* -- Preparing your query -- */
-		$query = "SELECT  id, place_id,  alt_ids,  name,  geometry,  address1,  address2,  city,  province,  country,  postal FROM " . $wpdb->prefix . wpLocationTable;
+		$query = "SELECT  id, place_id,  alt_ids,  name,  geometry,  address1,  address2,  city,  province,  country,  postal FROM " . $wpdb->prefix . WP_LOCATION_TABLE;
 
 		/* -- Ordering parameters -- */
 		//Parameters that are going to be used to order the result

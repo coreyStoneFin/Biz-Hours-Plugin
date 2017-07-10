@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if(!defined("wpLocationTable")){
+if ( ! defined( "wpLocationTable" ) ) {
 	include_once "includes/Constants.php";
 }
 
@@ -43,36 +43,106 @@ function SFCP_getLocations() {
 function wp_locations_view() {
 	try {
 		require_once( "pages/wp-locations-view.php" );
-	}catch (Exception $e){
-		var_dump($e);
+	} catch ( Exception $e ) {
+		var_dump( $e );
 	}
 }
 
 function wp_locations_add() {
 	try {
 		require_once( "pages/wp-location-new.php" );
-	}catch (Exception $e){
-		var_dump($e);
+	} catch ( Exception $e ) {
+		var_dump( $e );
 	}
 }
 
-function wp_locations_edit($location_id) {
+function wp_locations_edit( $location_id ) {
 	try {
 		require_once( "pages/wp-location-edit.php" );
-	}catch (Exception $e){
-		var_dump($e);
+	} catch ( Exception $e ) {
+		var_dump( $e );
 	}
 }
 
 function wp_locations_save() {
-	if ( !current_user_can( 'manage_options' ) )
-	{
+	global $wpdb;
+	if ( ! current_user_can( 'manage_options' ) ) {
 		wp_die( 'You are not allowed to be on this page.' );
 	}
-	// Check that nonce field
-	check_admin_referer( 'jk_op_verify' );
 
-	$options = get_option( 'jk_op_array' );
+	// Check that nonce field
+	check_admin_referer( 'wp_location_verify' );
+	$location = $_POST['location'];
+	if ( ! empty( $location ) ) {
+		// disabling alt_id for now
+		try {
+			$location['alt_ids'] = "";
+
+			// Insert Update Database
+			$sql = "INSERT INTO " . $wpdb->prefix . WP_LOCATION_TABLE . " (id, place_id, alt_ids, name, geometry, address1, address2, city, province, country, postal_code, created, updated)
+	    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW()) ON DUPLICATE KEY 
+	    UPDATE place_id = %s, alt_ids = %s, name = %s, geometry = %s, address1 = %s, address2 = %s, city = %s, province = %s, country = %s, postal_code = %s, updated=NOW()";
+
+			// var_dump($sql); // debug
+			$sql = $wpdb->prepare(
+				$sql,
+				! empty( $location['location_id'] ) ? $location['location_id'] : null,
+				// Insert Clause
+				$location['place_id'],
+				$location['alt_ids'],
+				$location['name'],
+				$location['geometry'],
+				$location['address1'],
+				$location['address2'],
+				$location['city'],
+				$location['province'],
+				$location['country'],
+				$location['postal_code'],
+				// Update Clause
+				$location['place_id'],
+				$location['alt_ids'],
+				$location['name'],
+				$location['geometry'],
+				$location['address1'],
+				$location['address2'],
+				$location['city'],
+				$location['province'],
+				$location['country'],
+				$location['postal_code']
+			);
+
+			// Save the Location to Database
+			$wpdb->query( $sql );
+			add_action( 'admin_notices', 'wp_locations_save_success' );
+			wp_redirect("/wp-admin/admin.php?page=wp-location");
+		} catch ( Exception $e ) {
+            // something Failed
+            // add error to Admin Page
+			add_action( 'admin_notices', 'wp_locations_save_failure' );
+			wp_redirect("/wp-admin/admin.php?page=wp-location-add");
+		}
+
+	}
+    // now that we've saved redirect back to the List
+
+}
+
+function wp_locations_save_success()
+{
+    ?>
+<div class="notice notice-success is-dismissible">
+        <p><?php _e( 'Successfully Saved Location!', 'wp-locations-textarea' ); ?></p>
+</div>
+    <?php
+}
+
+function wp_locations_save_failure()
+{
+	?>
+    <div class="notice notice-error">
+        <p><?php _e( 'Failed to Save Location!', 'wp-locations-textarea' ); ?></p>
+    </div>
+	<?php
 }
 
 add_action( 'admin_post_wp_locations_save', 'wp_locations_save' );
@@ -350,196 +420,25 @@ function giar_get_posts() {
  */
 
 // Add Admin Menu Tab
-function contactPageMenuItem() {
-	add_menu_page( 'Store Locations', 'Store Locations', 'manage_options', 'contactPageMenuItem', 'wp_locations_view' );
+function wpLocationMenuItem() {
+	add_menu_page( 'Store Locations', 'Store Locations', 'manage_options', 'wp-location', 'wp_locations_view' );
 	add_submenu_page(
-		"contactPageMenuItem",
+		"wp-location",
 		"Add New Location",
 		"Add Location",
 		"manage_options",
-		"addContactPageMenuItem",
+		"wp-location-add",
 		"wp_locations_add"
 	);
 }
 
-add_action( 'admin_menu', 'contactPageMenuItem' );
+add_action( 'admin_menu', 'wpLocationMenuItem' );
 
 add_action( 'add_meta_boxes', 'add_events_metaboxes' );
 
 function add_events_metaboxes() {
 	add_meta_box( 'wpt_events_location', 'Location Address', 'wpt_events_location', 'sf-store-locations', 'normal', 'default' );
 }
-//
-//function wpt_events_location() {
-//	global $post;
-//
-//	// Noncename needed to verify where the data originated
-//	echo '<input type="hidden" name="eventmeta_noncename" id="eventmeta_noncename" value="' .
-//	     wp_create_nonce( plugin_basename( __FILE__ ) ) . '" />';
-//
-//	// Get the location data if its already been entered
-//	$location = get_post_meta( $post->ID, '_location', true );
-//	$address  = get_post_meta( $post->ID, '_address', true );
-//	$city     = get_post_meta( $post->ID, '_city', true );
-//	$state    = get_post_meta( $post->ID, '_state', true );
-//	$zip      = get_post_meta( $post->ID, '_zip', true );
-//	$phone    = get_post_meta( $post->ID, '_phone', true );
-//	$email    = get_post_meta( $post->ID, '_email', true );
-//	$oemail   = get_post_meta( $post->ID, '_orders_email', true );
-//	$gpkey    = get_post_meta( $post->ID, '_google_places_key', true );
-//	$style    = 'style="width: 100px; display: inline-block; text-align: right;"';
-//	$states   = array(
-//		"Alabama",
-//		"Alaska",
-//		"Arizona",
-//		"Arkansas",
-//		"California",
-//		"Colorado",
-//		"Connecticut",
-//		"Delaware",
-//		"Florida",
-//		"Georgia",
-//		"Hawaii",
-//		"Idaho",
-//		"Illinois",
-//		"Indiana",
-//		"Iowa",
-//		"Kansas",
-//		"Kentucky",
-//		"Louisiana",
-//		"Maine",
-//		"Maryland",
-//		"Massachusetts",
-//		"Michigan",
-//		"Minnesota",
-//		"Mississippi",
-//		"Missouri",
-//		"Montana",
-//		"Nebraska",
-//		"Nevada",
-//		"New Hampshire",
-//		"New Jersey",
-//		"New Mexico",
-//		"New York",
-//		"North Carolina",
-//		"North Dakota",
-//		"Ohio",
-//		"Oklahoma",
-//		"Oregon",
-//		"Pennsylvania",
-//		"Rhode Island",
-//		"South Carolina",
-//		"South Dakota",
-//		"Tennessee",
-//		"Texas",
-//		"Utah",
-//		"Vermont",
-//		"Virginia",
-//		"Washington",
-//		"West Virginia",
-//		"Wisconsin",
-//		"Wyoming"
-//	);
-//
-//	// Echo out the field
-//	echo '<form>
-//            <fieldset>
-//                <legend>Address</legend>
-//                    <label for="_location" ' . $style . '>Longitude and Latitude for google map:</label>
-//                    <input type="text" name="_location" value="' . $location . '" placeholder="Example: 51.507622,-0.1305"/>
-//                    </br>
-//                    <label for="_address" ' . $style . '> Address Line:</label>
-//                    <input type="text" name="_address" value="' . $address . '" />
-//                    </br>
-//                    <label for="_city" ' . $style . '>City:</label>
-//                    <input type="text" name="_city" value="' . $city . '" />
-//                    </br>
-//                    <label for="_state" ' . $style . '>State:</label>
-//                    <select name="_state">';
-//	foreach ( $states as $key => $value ) {
-//		if ( $state == $value ) {
-//			echo '<option value="' . $value . '" selected="true">' . $value . '</option>';
-//		} else {
-//			echo '<option value="' . $value . '">' . $value . '</option>';
-//		}
-//
-//	}
-//	echo '</select>
-//                    </br>
-//                    <label for="_zip" ' . $style . '>Postal Code:</label>
-//                    <input type="number" name="_zip" value="' . $zip . '" />
-//                    </br>
-//                    <label for="_phone" ' . $style . '>Phone:</label>
-//                    <input type="tel" name="_phone" value="' . $phone . '" />
-//                    </br>
-//                    <label for="_email" ' . $style . '>Display Email:</label>
-//                    <input type="email" name="_email" value="' . $email . '" title="What customers see" />
-//                    <label for="_orders_email" ' . $style . '>Orders Email:</label>
-//                    <input type="text" name="_orders_email" value="' . $oemail . '" title="Where orders are sent"/>
-//                    </br>
-//                    <label for="_google_places_key" ' . $style . '>Google Place ID:</label>
-//                    <input type="text" name="_google_places_key" value="' . $gpkey . '" title="Google Place ID"/>
-//                    </br>
-//                    <label for="blah" ' . $style . '>  </label>
-//                    <span name="blah"><i>Find Place ID at <a href="https://developers.google.com/places/place-id">this</a> location</i></span>
-//                    </br>
-//
-//            </fieldset>
-//          </form>';
-//
-//}
-
-// Save the Metabox Data
-/**
- * Save a store location
- */
-//function wpt_save_events_meta( $post_id, $post ) {
-//
-//	// verify this came from the our screen and with proper authorization,
-//	// because save_post can be triggered at other times
-//	if ( ! wp_verify_nonce( $_POST['eventmeta_noncename'], plugin_basename( __FILE__ ) ) ) {
-//		return $post->ID;
-//	}
-//
-//	// Is the user allowed to edit the post or page?
-//	if ( ! current_user_can( 'edit_post', $post->ID ) ) {
-//		return $post->ID;
-//	}
-//
-//	// OK, we're authenticated: we need to find and save the data
-//	// We'll put it into an array to make it easier to loop though.
-//	$latlong = geocode( $_POST['_address'] . ', ' . $_POST['_city'] . ', ' . $_POST['_state'] );
-//	if ( $latlong ) {
-//		$events_meta['_location'] = $latlong[0] . ',' . $latlong[1];
-//	}
-//	//$events_meta['_location'] = $_POST['_location'];
-//	$events_meta['_address']           = $_POST['_address'];
-//	$events_meta['_city']              = $_POST['_city'];
-//	$events_meta['_state']             = $_POST['_state'];
-//	$events_meta['_zip']               = $_POST['_zip'];
-//	$events_meta['_phone']             = $_POST['_phone'];
-//	$events_meta['_email']             = $_POST['_email'];
-//	$events_meta['_orders_email']      = $_POST['_orders_email'];
-//	$events_meta['_google_places_key'] = $_POST['_google_places_key'];
-//
-//	// Add values of $events_meta as custom fields
-//
-//	foreach ( $events_meta as $key => $value ) { // Cycle through the $events_meta array!
-//		if ( $post->post_type == 'revision' ) {
-//			return;
-//		} // Don't store custom data twice
-//		$value = implode( ',', (array) $value ); // If $value is an array, make it a CSV (unlikely)
-//		if ( get_post_meta( $post->ID, $key, false ) ) { // If the custom field already has a value
-//			update_post_meta( $post->ID, $key, $value );
-//		} else { // If the custom field doesn't have a value
-//			add_post_meta( $post->ID, $key, $value );
-//		}
-//		if ( ! $value ) {
-//			delete_post_meta( $post->ID, $key );
-//		} // Delete if blank
-//	}
-//
-//}
 
 add_action( 'save_post', 'wpt_save_events_meta', 1, 2 ); // save the custom fields
 
@@ -669,7 +568,7 @@ function wpLocationInstall() {
 	global $wpdb;
 	global $wp_location_db_version;
 
-	$table_name      = $wpdb->prefix . wpLocationTable;
+	$table_name      = $wpdb->prefix . WP_LOCATION_TABLE;
 	$charset_collate = $wpdb->get_charset_collate();
 
 	$sql = "CREATE TABLE $table_name (
@@ -683,7 +582,7 @@ function wpLocationInstall() {
 	city VARCHAR(255) NOT NULL,
 	province VARCHAR(255) NOT NULL,
 	country VARCHAR(255) NOT NULL DEFAULT 'United States',
-	postal VARCHAR(255) NOT NULL,
+	postal_code VARCHAR(255) NOT NULL,
 	created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY  (id)
