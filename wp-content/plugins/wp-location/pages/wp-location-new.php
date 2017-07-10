@@ -124,20 +124,20 @@ $inputClass = "";
                         <input type="text" name="postalCode" value="" placeholder="68508"/>
                     </td>
                 </tr>
-                <tr class="form-field form-required">
+                <tr class="form-field">
                     <th scope="row">
-                        <label for="name">Location Name: <span class="description">(required)</span></label>
+                        <label for="geometry">Geometry:</label>
                     </th>
                     <td>
-                        <input type="text" name="name" value="" placeholder="Dr. Muffin's Residence"/>
+                        <input type="text" name="geometry" value="" placeholder=""/>
                     </td>
                 </tr>
                 <tr class="form-field form-required">
                     <th scope="row">
-                        <label for="name">Location Name: <span class="description">(required)</span></label>
+                        <label for="place_id">Google Place Id:</label>
                     </th>
                     <td>
-                        <input type="text" name="name" value="" placeholder="Dr. Muffin's Residence"/>
+                        <input type="text" name="place_id" value="" placeholder=""/>
                     </td>
                 </tr>
 
