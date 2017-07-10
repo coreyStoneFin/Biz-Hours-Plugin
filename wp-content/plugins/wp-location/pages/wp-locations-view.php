@@ -247,17 +247,16 @@ switch ( $wp_list_table->current_action() ) {
 				?></h1>
 
 			<?php
-			if ( current_user_can( 'create_users' ) ) { ?>
-                <a href="<?php echo admin_url( 'user-new.php' ); ?>"
-                   class="page-title-action"><?php echo esc_html_x( 'Add New', 'user' ); ?></a>
-			<?php } elseif ( is_multisite() && current_user_can( 'promote_users' ) ) { ?>
-                <a href="<?php echo admin_url( 'user-new.php' ); ?>"
-                   class="page-title-action"><?php echo esc_html_x( 'Add Existing', 'user' ); ?></a>
-			<?php }
+			if ( current_user_can( 'create_users' ) )
+			{
+			    ?>
+                <a href="<?php echo admin_url( 'admin.php?page=wp-location-add','https' ); ?>" class="page-title-action"><?php echo esc_html_x( 'Add New', 'location' ); ?></a>
+			<?php
+			}
 
-			if ( !empty( $usersearch ) ) {
+			if ( !empty( $locationsearch ) ) {
 				/* translators: %s: search keywords */
-				printf( '<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', esc_html( $usersearch ) );
+				printf( '<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', esc_html( $locationsearch ) );
 			}
 			?>
 
