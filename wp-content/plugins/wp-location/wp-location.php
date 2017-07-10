@@ -436,13 +436,13 @@ function wpLocationMenuItem() {
 
 add_action( 'admin_menu', 'wpLocationMenuItem' );
 
-add_action( 'add_meta_boxes', 'add_events_metaboxes' );
+//add_action( 'add_meta_boxes', 'add_events_metaboxes' );
 
-function add_events_metaboxes() {
-	add_meta_box( 'wpt_events_location', 'Location Address', 'wpt_events_location', 'sf-store-locations', 'normal', 'default' );
-}
+//function add_events_metaboxes() {
+//	add_meta_box( 'wpt_events_location', 'Location Address', 'wpt_events_location', 'sf-store-locations', 'normal', 'default' );
+//}
 
-add_action( 'save_post', 'wpt_save_events_meta', 1, 2 ); // save the custom fields
+//add_action( 'save_post', 'wpt_save_events_meta', 1, 2 ); // save the custom fields
 
 // function to geocode address, it will return false if unable to geocode address
 function geocode( $address ) {

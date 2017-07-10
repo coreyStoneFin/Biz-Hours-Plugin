@@ -45,7 +45,8 @@ class wp_locations_list_table extends WP_List_Table {
 			'province' => __( 'State' ),
 			'country'  => __( 'Country' ),
 			'postal_code'   => __( 'Postal Code' ),
-			'geometry' => __( 'Geometry' )
+			'geometry' => __( 'Geometry' ),
+			'edit'=>('Edit')
 		);
 
 		return $columns;
@@ -256,7 +257,9 @@ class wp_locations_list_table extends WP_List_Table {
 					case 'alt_ids':
 						$r .= $location_object->alt_ids;
 						break;
-
+					case 'edit':
+						$r .= admin_url(sprintf("admin.php?page=wp-location-edit&id=%d",$location_object->id),'https');
+						break;
 					default:
 
 				}
