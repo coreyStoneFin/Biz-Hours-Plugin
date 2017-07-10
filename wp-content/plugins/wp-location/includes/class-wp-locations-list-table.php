@@ -44,7 +44,7 @@ class wp_locations_list_table extends WP_List_Table {
 			'city'     => __( 'City' ),
 			'province' => __( 'State' ),
 			'country'  => __( 'Country' ),
-			'postal'   => __( 'Postal Code' ),
+			'postal_code'   => __( 'Postal Code' ),
 			'geometry' => __( 'Geometry' )
 		);
 
@@ -115,7 +115,7 @@ class wp_locations_list_table extends WP_List_Table {
 	//	$screen = get_current_screen();
 
 		/* -- Preparing your query -- */
-		$query = "SELECT  id, place_id,  alt_ids,  name,  geometry,  address1,  address2,  city,  province,  country,  postal FROM " . $wpdb->prefix . WP_LOCATION_TABLE;
+		$query = "SELECT  id, place_id,  alt_ids,  name,  geometry,  address1,  address2,  city,  province,  country,  postal_code FROM " . $wpdb->prefix . WP_LOCATION_TABLE;
 
 		/* -- Ordering parameters -- */
 		//Parameters that are going to be used to order the result
@@ -244,8 +244,8 @@ class wp_locations_list_table extends WP_List_Table {
 					case 'country':
 						$r .= $location_object->country;
 						break;
-					case 'postal':
-						$r .= $location_object->postal;
+					case 'postal_code':
+						$r .= $location_object->postal_code;
 						break;
 					case 'place_id':
 						$r .= $location_object->place_id;
@@ -290,7 +290,7 @@ class wp_locations_list_table extends WP_List_Table {
 				$gp->city     = $object["city"];
 				$gp->province = $object["province"];
 				$gp->country  = $object["country"];
-				$gp->postal   = $object["postal"];
+				$gp->postal_code   = $object["postal_code"];
 			} else {
 				$gp->id       = $object[0];
 				$gp->place_id = $object[1];
@@ -302,7 +302,7 @@ class wp_locations_list_table extends WP_List_Table {
 				$gp->city     = $object[6];
 				$gp->province = $object[7];
 				$gp->country  = $object[8];
-				$gp->postal   = $object[9];
+				$gp->postal_code   = $object[9];
 			}
 		}
 		if ( is_object( $object ) ) {
@@ -316,7 +316,7 @@ class wp_locations_list_table extends WP_List_Table {
 			$gp->city     = $object->city;
 			$gp->province = $object->province;
 			$gp->country  = $object->country;
-			$gp->postal   = $object->postal;
+			$gp->postal_code   = $object->postal_code;
 		}
 
 		return $gp;
