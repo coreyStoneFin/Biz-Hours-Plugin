@@ -258,7 +258,7 @@ class wp_locations_list_table extends WP_List_Table {
 						$r .= $location_object->alt_ids;
 						break;
 					case 'edit':
-						$r .= admin_url(sprintf("admin.php?page=wp-location-edit&id=%d",$location_object->id),'https');
+						$r .= '<a href="'.admin_url(sprintf("admin.php?page=wp-location-edit&id=%d",$location_object->id),'https').'">Edit Location</a>';
 						break;
 					default:
 

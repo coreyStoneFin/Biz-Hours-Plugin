@@ -423,7 +423,10 @@ function giar_get_posts() {
 
 // Add Admin Menu Tab
 function wpLocationMenuItem() {
-	add_menu_page( 'Store Locations', 'Store Locations', 'manage_options', 'wp-location', 'wp_locations_view' );
+	// add Store Location Main Menu
+    add_menu_page( 'Store Locations', 'Store Locations', 'manage_options', 'wp-location', 'wp_locations_view' );
+
+    // Add "Add Location" SubMenu
 	add_submenu_page(
 		"wp-location",
 		"Add New Location",
@@ -431,6 +434,15 @@ function wpLocationMenuItem() {
 		"manage_options",
 		"wp-location-add",
 		"wp_locations_add"
+	);
+	// add "Edit Location" page, WITHOUT menu Item
+	add_submenu_page(
+		null,
+		"Edit Location",
+		"Edit Location",
+		"manage_options",
+		"wp-location-edit",
+		"wp_locations_edit"
 	);
 }
 
