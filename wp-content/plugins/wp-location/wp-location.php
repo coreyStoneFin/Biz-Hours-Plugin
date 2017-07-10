@@ -90,18 +90,31 @@ function wp_locations_save() {
 				$location['address2'] = null;
 			}
 
-			$format                = array();
-			$format['id']          = "%d";
-			$format['place_id']    = "%s";
-			$format['alt_ids']     = "%s";
-			$format['name']        = "%s";
-			$format['geometry']    = "%s";
-			$format['address1']    = "%s";
-			$format['address2']    = "%s";
-			$format['city']        = "%s";
-			$format['province']    = "%s";
-			$format['country']     = "%s";
-			$format['postal_code'] = "%s";
+			// make sure that the ID key Exists so that the format array is aligned
+			if ( ! array_key_exists( "id", $location ) ) {
+				$location['id'] = null;
+			}
+
+			// sort the array by Key, so that our format lines up, otherwise dont use a format at all
+			$format = null;
+			if ( ksort( $location ) ) {
+				$format                = array();
+				$format['address1']    = "%s";
+				$format['address2']    = "%s";
+				$format['alt_ids']     = "%s";
+				$format['city']        = "%s";
+				$format['country']     = "%s";
+				$format['geometry']    = "%s";
+				$format['id']          = "%d";
+				$format['name']        = "%s";
+				$format['province']    = "%s";
+				$format['place_id']    = "%s";
+				$format['postal_code'] = "%s";
+
+				// just in case i f*ck up something above
+				ksort($format);
+			}
+
 			$wpdb->replace( $wpdb->prefix . WP_LOCATION_TABLE, $location, $format );
 			add_action( 'admin_notices', 'wp_locations_save_success' );
 			wp_redirect( "/wp-admin/admin.php?page=wp-location" );
