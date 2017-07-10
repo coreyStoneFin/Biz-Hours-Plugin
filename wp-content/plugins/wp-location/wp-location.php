@@ -76,68 +76,57 @@ function wp_locations_save() {
 	if ( ! empty( $location ) ) {
 		// disabling alt_id for now
 		try {
-			$location['alt_ids'] = "";
+			// Check for NULL Values, and set as such
+			if ( empty( $location['geometry'] ) ) {
+				$location['geometry'] = null;
+			}
+			if ( empty( $location['place_id'] ) ) {
+				$location['place_id'] = null;
+			}
+			if ( empty( $location['alt_ids'] ) ) {
+				$location['alt_ids'] = null;
+			}
+			if ( empty( $location['address2'] ) ) {
+				$location['address2'] = null;
+			}
 
-			// Insert Update Database
-			$sql = "INSERT INTO " . $wpdb->prefix . WP_LOCATION_TABLE . " (id, place_id, alt_ids, name, geometry, address1, address2, city, province, country, postal_code, created, updated)
-	    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW()) ON DUPLICATE KEY 
-	    UPDATE place_id = %s, alt_ids = %s, name = %s, geometry = %s, address1 = %s, address2 = %s, city = %s, province = %s, country = %s, postal_code = %s, updated=NOW()";
-
-			// var_dump($sql); // debug
-			$sql = $wpdb->prepare(
-				$sql,
-				! empty( $location['location_id'] ) ? $location['location_id'] : null,
-				// Insert Clause
-				$location['place_id'],
-				$location['alt_ids'],
-				$location['name'],
-				$location['geometry'],
-				$location['address1'],
-				$location['address2'],
-				$location['city'],
-				$location['province'],
-				$location['country'],
-				$location['postal_code'],
-				// Update Clause
-				$location['place_id'],
-				$location['alt_ids'],
-				$location['name'],
-				$location['geometry'],
-				$location['address1'],
-				$location['address2'],
-				$location['city'],
-				$location['province'],
-				$location['country'],
-				$location['postal_code']
-			);
-
-			// Save the Location to Database
-			$wpdb->query( $sql );
+			$format                = array();
+			$format['id']          = "%d";
+			$format['place_id']    = "%s";
+			$format['alt_ids']     = "%s";
+			$format['name']        = "%s";
+			$format['geometry']    = "%s";
+			$format['address1']    = "%s";
+			$format['address2']    = "%s";
+			$format['city']        = "%s";
+			$format['province']    = "%s";
+			$format['country']     = "%s";
+			$format['postal_code'] = "%s";
+			$wpdb->replace( $wpdb->prefix . WP_LOCATION_TABLE, $location, $format );
 			add_action( 'admin_notices', 'wp_locations_save_success' );
-			wp_redirect("/wp-admin/admin.php?page=wp-location");
+			wp_redirect( "/wp-admin/admin.php?page=wp-location" );
 		} catch ( Exception $e ) {
-            // something Failed
-            // add error to Admin Page
+			// something Failed
+			// add error to Admin Page
 			add_action( 'admin_notices', 'wp_locations_save_failure' );
-			wp_redirect("/wp-admin/admin.php?page=wp-location-add");
+			var_dump( $e );
+			//wp_redirect("/wp-admin/admin.php?page=wp-location-add");
 		}
 
 	}
-    // now that we've saved redirect back to the List
+	// now that we've saved redirect back to the List
 
 }
 
-function wp_locations_save_success()
-{
-    ?>
-<div class="notice notice-success is-dismissible">
+function wp_locations_save_success() {
+	?>
+    <div class="notice notice-success is-dismissible">
         <p><?php _e( 'Successfully Saved Location!', 'wp-locations-textarea' ); ?></p>
-</div>
-    <?php
+    </div>
+	<?php
 }
 
-function wp_locations_save_failure()
-{
+function wp_locations_save_failure() {
 	?>
     <div class="notice notice-error">
         <p><?php _e( 'Failed to Save Location!', 'wp-locations-textarea' ); ?></p>
