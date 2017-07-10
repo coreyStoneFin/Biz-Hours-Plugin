@@ -1,5 +1,5 @@
 <?php
-$states   = array(
+$states     = array(
 	"Alabama",
 	"Alaska",
 	"Arizona",
@@ -51,57 +51,102 @@ $states   = array(
 	"Wisconsin",
 	"Wyoming"
 );
-$style="style=''";
+$labelClass = "";
+$inputClass = "";
 ?>
 <div class="wrap">
     <h2>Add Location</h2>
     <form method="post" action="admin-post.php">
-        <input type="hidden" name="action" value="wp_locations_save" />
+        <input type="hidden" name="action" value="wp_locations_save"/>
         <fieldset>
-            <legend>Address</legend>
-            <label for="name" <?php echo $style; ?>> Address Name:</label>
-            <input type="text" name="name" value="" />
-            </br>
-            <legend>Address</legend>
-            <label for="address1" <?php echo $style; ?>> Address Line:</label>
-            <input type="text" name="address1" value="" />
-            </br>
+            <table class="form-table">
+                <tbody>
+                <tr class="form-field form-required">
+                    <th scope="row">
+                        <label for="name">Location Name: <span class="description">(required)</span></label>
+                    </th>
+                    <td>
+                        <input type="text" name="name" value="" placeholder="Dr. Muffin's Residence"/>
+                    </td>
+                </tr>
+                <tr class="form-field form-required">
+                    <th scope="row">
+                        <label for="address1">Address: <span class="description">(required)</span></label>
+                    </th>
+                    <td>
+                        <input type="text" name="address1" value="" placeholder="123 Drury Lane"/>
+                    </td>
+                </tr>
+                <tr class="form-field">
+                    <th scope="row">
+                        <label for="address2">Address2:</label>
+                    </th>
+                    <td>
+                        <input type="text" name="address2" value="" placeholder=""/>
+                    </td>
+                </tr>
+                <tr class="form-field form-required">
+                    <th scope="row">
+                        <label for="city">City:</label>
+                    </th>
+                    <td>
+                        <input type="text" name="city" value="" placeholder="Lincoln"/>
+                    </td>
+                </tr>
+                <tr class="form-field form-required">
+                    <th scope="row">
+                        <label for="province">State:<span class="description">(required)</span></label>
+                    </th>
+                    <td>
+                        <select name="province">
+                            <optgroup label="Please Select"></optgroup>
+							<?php
+							foreach ( $states as $key => $value ) {
+								echo '<option value="' . $value . '">' . $value . '</option>';
+							}
+							?>
+                        </select>
+                    </td>
+                </tr>
+                <tr class="form-field">
+                    <th scope="row">
+                        <label for="country">Country:</label>
+                    </th>
+                    <td>
+                        <input type="text" name="country" value="United States"/>
+                    </td>
+                </tr>
+                <tr class="form-field form-required">
+                    <th scope="row">
+                        <label for="postalCode">Postal Code: <span class="description">(required)</span></label>
+                    </th>
+                    <td>
+                        <input type="text" name="postalCode" value="" placeholder="68508"/>
+                    </td>
+                </tr>
+                <tr class="form-field form-required">
+                    <th scope="row">
+                        <label for="name">Location Name: <span class="description">(required)</span></label>
+                    </th>
+                    <td>
+                        <input type="text" name="name" value="" placeholder="Dr. Muffin's Residence"/>
+                    </td>
+                </tr>
+                <tr class="form-field form-required">
+                    <th scope="row">
+                        <label for="name">Location Name: <span class="description">(required)</span></label>
+                    </th>
+                    <td>
+                        <input type="text" name="name" value="" placeholder="Dr. Muffin's Residence"/>
+                    </td>
+                </tr>
 
-            <label for="address2" <?php echo $style; ?>> Address Line 2:</label>
-            <input type="text" name="address2" value="" />
-           </br>
-
-            <label for="city" <?php echo $style; ?>>City:</label>
-            <input type="text" name="city" value="" />
-            </br>
-
-            <label for="province" <?php echo $style; ?>>State:</label>
-            <select name="province">
-                <optgroup label="Please Select"></optgroup >
-                <?php
-                foreach ( $states as $key => $value ) {
-                    echo '<option value="' . $value . '">' . $value . '</option>';
-                }
-                ?>
-                </select>
-            </br>
-
-            <label for="country" <?php echo $style; ?>>Country:</label>
-            <input type="text" name="country" value="United States" />
-            </br>
-
-            <label for="postalCode" <?php echo $style; ?>>Postal Code:</label>
-            <input type="number" name="postalCode" value="" />
-            </br>
-            <label for="geometry" <?php echo $style; ?>>Longitude and Latitude for google map:</label>
-            <input type="text" name="geometry" value="" placeholder="Example: 51.507622,-0.1305"/>
-            </br>
-            <label for="place_id" <?php echo $style; ?>>Google Place ID:</label>
-            <input type="text" name="place_id" value="" title="Google Place ID"/>
-            </br>
-            <label for="blah" >  </label>
-            <span name="blah"><i>Find Place ID at <a href="https://developers.google.com/places/place-id">this</a> location</i></span>
-            </br>
+                <label for="blah"> </label>
+                <span name="blah"><i>Find Place ID at <a href="https://developers.google.com/places/place-id">this</a> location</i></span>
+                </br>
+                <button value="Save Location" type="submit">Save Location</button>
+                </tbody>
+            </table>
         </fieldset>
     </form>
 </div>
