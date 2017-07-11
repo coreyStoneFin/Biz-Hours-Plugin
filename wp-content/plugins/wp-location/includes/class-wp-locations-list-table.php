@@ -45,7 +45,8 @@ class wp_locations_list_table extends WP_List_Table {
 			'province' => __( 'State' ),
 			'country'  => __( 'Country' ),
 			'postal_code'   => __( 'Postal Code' ),
-			'geometry' => __( 'Geometry' ),
+			'latitude' => __( 'Latitude' ),
+			'longitude' => __( 'Longitude' ),
 			'edit'=>('Edit')
 		);
 
@@ -116,7 +117,7 @@ class wp_locations_list_table extends WP_List_Table {
 	//	$screen = get_current_screen();
 
 		/* -- Preparing your query -- */
-		$query = "SELECT  id, place_id,  alt_ids,  name,  geometry,  address1,  address2,  city,  province,  country,  postal_code FROM " . $wpdb->prefix . WP_LOCATION_TABLE;
+		$query = "SELECT  id, place_id,  alt_ids,  name, latitude, longitude, address1,  address2,  city,  province,  country,  postal_code FROM " . $wpdb->prefix . WP_LOCATION_TABLE;
 
 		/* -- Ordering parameters -- */
 		//Parameters that are going to be used to order the result
@@ -223,7 +224,6 @@ class wp_locations_list_table extends WP_List_Table {
 
 				$r .= "<td $attributes>";
 				switch ( $column_name ) {
-					//id, place_id,  alt_ids,  name,  geometry,  address1,  address2,  city,  province,  country,  postal
 					case 'id':
 						$r .= $location_object->id;
 						break;
@@ -251,9 +251,13 @@ class wp_locations_list_table extends WP_List_Table {
 					case 'place_id':
 						$r .= $location_object->place_id;
 						break;
-					case 'geometry':
-						$r .= $location_object->geometry;
+						//latitude, longitude
+					case 'latitude':
+						$r .= $location_object->latitude;
 						break;
+						case 'longitude':
+					$r .= $location_object->longitude;
+					break;
 					case 'alt_ids':
 						$r .= $location_object->alt_ids;
 						break;
@@ -287,7 +291,8 @@ class wp_locations_list_table extends WP_List_Table {
 				$gp->place_id = $object["place_id"];
 				$gp->alt_ids  = $object["alt_ids"];
 				$gp->name     = $object["name"];
-				$gp->geometry = $object["geometry"];
+				$gp->latitude = $object["latitude"];
+				$gp->longitude = $object["longitude"];
 				$gp->address1 = $object["address1"];
 				$gp->address2 = $object["address2"];
 				$gp->city     = $object["city"];
@@ -295,25 +300,29 @@ class wp_locations_list_table extends WP_List_Table {
 				$gp->country  = $object["country"];
 				$gp->postal_code   = $object["postal_code"];
 			} else {
+				//  id, place_id,  alt_ids,  name, latitude, longitude, address1,  address2,  city,  province,  country,  postal_code
 				$gp->id       = $object[0];
 				$gp->place_id = $object[1];
 				$gp->alt_ids  = $object[2];
-				$gp->name     = $object[2];
-				$gp->geometry = $object[3];
-				$gp->address1 = $object[4];
-				$gp->address2 = $object[5];
-				$gp->city     = $object[6];
-				$gp->province = $object[7];
-				$gp->country  = $object[8];
-				$gp->postal_code   = $object[9];
+				$gp->name     = $object[3];
+				$gp->latitude = $object[4];
+				$gp->longitude = $object[5];
+				$gp->address1 = $object[6];
+				$gp->address2 = $object[7];
+				$gp->city     = $object[8];
+				$gp->province = $object[9];
+				$gp->country  = $object[10];
+				$gp->postal_code   = $object[11];
 			}
 		}
+
 		if ( is_object( $object ) ) {
 			$gp->id       = $object->id;
 			$gp->place_id = $object->place_id;
 			$gp->alt_ids  = $object->alt_ids;
 			$gp->name     = $object->name;
-			$gp->geometry = $object->geometry;
+			$gp->latitude = $object->latitude;
+			$gp->longitude = $object->longitude;
 			$gp->address1 = $object->address1;
 			$gp->address2 = $object->address2;
 			$gp->city     = $object->city;
@@ -328,15 +337,15 @@ class wp_locations_list_table extends WP_List_Table {
 	protected function get_bulk_actions() {
 		$actions = array();
 
-		if ( is_multisite() ) {
-			if ( current_user_can( 'remove_users' ) ) {
-				$actions['remove'] = __( 'Remove' );
-			}
-		} else {
-			if ( current_user_can( 'delete_users' ) ) {
-				$actions['delete'] = __( 'Delete' );
-			}
-		}
+//		if ( is_multisite() ) {
+//			if ( current_user_can( 'remove_users' ) ) {
+//				$actions['remove'] = __( 'Remove' );
+//			}
+//		} else {
+//			if ( current_user_can( 'delete_users' ) ) {
+//				$actions['delete'] = __( 'Delete' );
+//			}
+//		}
 
 		return $actions;
 	}

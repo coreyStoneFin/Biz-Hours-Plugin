@@ -166,10 +166,18 @@ $inputClass = "";
                 </tr>
                 <tr class="form-field">
                     <th scope="row">
-                        <label for="location[geometry]">Geometry:</label>
+                        <label for="location[latitude]">Latitude:</label>
                     </th>
                     <td>
-                        <input type="text" name="location[geometry]" value="<?php echo $location['geometry']; ?>" placeholder=""/>
+                        <input type="text" name="location[latitude]" value="<?php echo $location['latitude']; ?>" placeholder=""/>
+                    </td>
+                </tr>
+                <tr class="form-field">
+                    <th scope="row">
+                        <label for="location[longitude]">Longitude:</label>
+                    </th>
+                    <td>
+                        <input type="text" name="location[longitude]" value="<?php echo $location['longitude']; ?>" placeholder=""/>
                     </td>
                 </tr>
                 <tr class="form-field">

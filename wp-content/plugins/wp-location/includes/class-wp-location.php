@@ -11,7 +11,8 @@ class wp_location {
     public $place_id;
     public $alt_ids;
     public $name;
-    public $geometry;
+	public $latitude;
+    public $longitude;
     public $address1;
     public $address2;
     // City

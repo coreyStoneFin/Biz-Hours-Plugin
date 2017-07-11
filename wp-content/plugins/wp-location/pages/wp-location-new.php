@@ -140,10 +140,18 @@ $inputClass = "";
                 </tr>
                 <tr class="form-field">
                     <th scope="row">
-                        <label for="location[geometry]">Geometry:</label>
+                        <label for="location[latitude]">Latitude:</label>
                     </th>
                     <td>
-                        <input type="text" name="location[geometry]" value="" placeholder=""/>
+                        <input type="text" name="location[latitude]" value="" placeholder="40.810556"/>
+                    </td>
+                </tr>
+                <tr class="form-field">
+                    <th scope="row">
+                        <label for="location[longitude]">Longitude:</label>
+                    </th>
+                    <td>
+                        <input type="text" name="location[longitude]" value="" placeholder=" -96.680278"/>
                     </td>
                 </tr>
                 <tr class="form-field">

@@ -77,12 +77,16 @@ function wp_locations_save() {
 		// disabling alt_id for now
 		try {
 			// Check for NULL Values, and set as such
-			if ( empty( $location['geometry'] ) ) {
+			if ( empty( $location['longitude'] )||empty( $location['latitude'] ) ) {
 				// try and get the Geometry from Google
 				$formatted = wp_location_format_address( $location );
-
-				$location['geometry'] = wp_location_geocode( $formatted );
+				$temp      = wp_location_geocode( $formatted );
+				if ( $temp != null ) {
+					$location['latitude']  = floatval( $temp['latitude'] );
+					$location['longitude'] = floatval( $temp['longitude'] );
+				}
 			}
+
 			if ( empty( $location['place_id'] ) ) {
 				$location['place_id'] = null;
 			}
@@ -119,8 +123,8 @@ function wp_locations_save() {
 			}
 
 			$wpdb->replace( $wpdb->prefix . WP_LOCATION_TABLE, $location, $format );
-			add_action( 'admin_notices', 'wp_locations_save_success' );
 			wp_redirect( "/wp-admin/admin.php?page=wp-location" );
+			add_action( 'admin_notices', 'wp_locations_save_success' );
 		} catch ( Exception $e ) {
 			// something Failed
 			// add error to Admin Page
@@ -578,7 +582,8 @@ function wpLocationInstall() {
 	place_id TEXT NULL,
 	alt_ids TEXT NULL,
 	name VARCHAR(255) NOT NULL,
-	geometry GEOMETRY NULL,
+	latitude DECIMAL(20,10) NULL,
+	longitude DECIMAL(20,10) NULL,
 	address1 VARCHAR(255) NOT NULL,
 	address2 VARCHAR(255) NULL DEFAULT NULL,
 	city VARCHAR(255) NOT NULL,
@@ -593,7 +598,6 @@ function wpLocationInstall() {
 
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta( $sql );
-
 	add_option( 'wp_location_db_version', $wp_location_db_version );
 }
 
