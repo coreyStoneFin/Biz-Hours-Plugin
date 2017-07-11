@@ -15,19 +15,8 @@ if ( ! defined( "wpLocationTable" ) ) {
 	include_once "includes/Constants.php";
 }
 
-function SFCP_getLocations() {
-	$store_locations = array();
-	$query           = get_posts(
-		array(
-			'meta_value' => '',
-			'post_type'  => 'sf-store-locations'
-		)
-	);
-
-	foreach ( $query as $store_id => $store_location ) {
-		$store_locations[ $store_location->post_title ] = get_post_meta( $store_location->ID, '_location', true );
-
-	}
+if ( ! class_exists( "wp_location" ) ) {
+	include_once "includes/class-wp-location.php";
 }
 
 function wp_locations_view() {
@@ -60,7 +49,8 @@ function get_wp_location_by_id( $id ) {
 
 function get_wp_location_by_name( $name ) {
 	global $wpdb;
-	$locationRow     = $wpdb->get_row( "Select * from " . $wpdb->prefix . WP_LOCATION_TABLE . " where name = " . $name . " LIMIT 1", ARRAY_A );
+	$sql = $wpdb->prepare("Select * from " . $wpdb->prefix . WP_LOCATION_TABLE . " where name = %s LIMIT 1",$name);
+	$locationRow     = $wpdb->get_row($sql , ARRAY_A );
 	$gp              = new wp_location();
 	$gp->id          = $locationRow["id"];
 	$gp->place_id    = $locationRow["place_id"];
