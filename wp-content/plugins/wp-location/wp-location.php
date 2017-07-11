@@ -112,8 +112,8 @@ function wp_locations_save() {
 				$format['city']        = "%s";
 				$format['country']     = "%s";
 				$format['id']          = "%d";
-				$format['latitude']    = "%d";
-				$format['longitude']    = "%d";
+				$format['latitude']    = "%f";
+				$format['longitude']    = "%f";
 				$format['name']        = "%s";
 				$format['province']    = "%s";
 				$format['place_id']    = "%s";
