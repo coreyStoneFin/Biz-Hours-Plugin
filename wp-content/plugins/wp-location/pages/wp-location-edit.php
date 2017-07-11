@@ -22,7 +22,7 @@ $id = intval( $_GET['id'] );
 if ( $id <= 0 ) {
 	wp_redirect( admin_url( "admin.php?page=wp-location-new" ) );
 }
-
+global $wpdb;
 $location = $wpdb->get_row( "Select * from " . $wpdb->prefix . WP_LOCATION_TABLE . " where id = " . $id . " LIMIT 1", ARRAY_A );
 
 $states     = array(
@@ -188,6 +188,7 @@ $inputClass = "";
                 <tr class="form-field form-required">
                     <td colspan="2">
                         <button value="Save Location" type="submit">Save Location</button>
+                        <button value="Cancel" type="button" onclick="window.location=\"<?php echo admin_url("admin.php?page=wp-location"); ?>\"">Cancel</button>
                     </td>
                 </tr>
                 </tbody>
