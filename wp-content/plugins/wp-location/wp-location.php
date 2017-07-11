@@ -487,8 +487,8 @@ function wp_location_map_shortcode( $atts = [] ) {
 		$width = array_key_exists("width",$atts)?$atts["width"]:"500px";
 		$style = array_key_exists("style",$atts)?$atts["style"].";":"";
 
-		if(!empty($height)) $style."height:$height;";
-		if(!empty($width)) $style."width:$width;";
+		if(!empty($height)) $style.="height:$height;";
+		if(!empty($width)) $style.="width:$width;";
 		?>
         <h3><?php echo $location->name; ?></h3>
         <span><?php echo wp_location_format_address( $location ); ?></span>
@@ -612,11 +612,11 @@ add_action( 'admin_menu', 'wpLocationMenuItem' );
 add_action( 'admin_post_wp_locations_save', 'wp_locations_save' );
 
 add_shortcode( 'wp_location_map', 'wp_location_map_shortcode' );
-add_shortcode( 'googleplace', 'google_place_shortcode' );
-add_shortcode( 'googleplace_pickup', 'google_place_pickup_time_shortcode' );
-add_shortcode( 'googleplace_delivery', 'google_place_delivery_time_shortcode' );
-add_shortcode( 'googleplace_business_status', 'google_place_business_status_shortcode' );
-add_shortcode( 'googleplace_business_hours', 'google_place_business_hours_shortcode' );
+//add_shortcode( 'googleplace', 'google_place_shortcode' );
+//add_shortcode( 'googleplace_pickup', 'google_place_pickup_time_shortcode' );
+//add_shortcode( 'googleplace_delivery', 'google_place_delivery_time_shortcode' );
+//add_shortcode( 'googleplace_business_status', 'google_place_business_status_shortcode' );
+//add_shortcode( 'googleplace_business_hours', 'google_place_business_hours_shortcode' );
 
 // Install or Update the Table
 register_activation_hook( __FILE__, 'wpLocationInstall' );
