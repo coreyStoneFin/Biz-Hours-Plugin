@@ -58,6 +58,9 @@ function wp_locations_add() {
 
 function wp_locations_edit( $location_id ) {
 	try {
+        if ( ! defined( "wpLocationTable" ) ) {
+			include_once "includes/Constants.php";
+		}
 		require_once( "pages/wp-location-edit.php" );
 	} catch ( Exception $e ) {
 		var_dump( $e );

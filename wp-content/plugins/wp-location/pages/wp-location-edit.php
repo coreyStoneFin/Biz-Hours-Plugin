@@ -1,4 +1,30 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
+if ( ! current_user_can( 'manage_options' ) ) {
+	wp_die(
+		'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
+		'<p>' . __( 'Sorry, you are not allowed to list users.' ) . '</p>',
+		403
+	);
+}
+
+#global $wpdb;
+// get current Location
+if ( empty( $_GET['id'] ) ) {
+	wp_redirect( admin_url( "admin.php?page=wp-location-new" ) );
+}
+
+$id = intval( $_GET['id'] );
+if ( $id <= 0 ) {
+	wp_redirect( admin_url( "admin.php?page=wp-location-new" ) );
+}
+
+$location = $wpdb->get_row( "Select * from " . $wpdb->prefix . WP_LOCATION_TABLE . " where id = " . $id . " LIMIT 1", ARRAY_A );
+
 $states     = array(
 	"Alabama",
 	"Alaska",
@@ -59,6 +85,8 @@ $inputClass = "";
 	<?php settings_errors(); ?>
     <form method="post" action="admin-post.php">
         <input type="hidden" name="action" value="wp_locations_save"/>
+        <input type="hidden" name="location[id]" value="<?php echo $location['id']; ?>"/>
+
 		<?php wp_nonce_field( 'wp_location_verify' ); ?>
         <fieldset>
             <table class="form-table">
@@ -68,7 +96,8 @@ $inputClass = "";
                         <label for="location[name]">Location Name: <span class="description">(required)</span></label>
                     </th>
                     <td>
-                        <input type="text" name="location[name]" value="" placeholder="Dr. Muffin's Residence"/>
+                        <input type="text" name="location[name]" value="<?php echo $location['name']; ?>"
+                               placeholder="Dr. Muffin's Residence"/>
                     </td>
                 </tr>
                 <tr class="form-field form-required">
@@ -76,7 +105,8 @@ $inputClass = "";
                         <label for="location[address1]">Address: <span class="description">(required)</span></label>
                     </th>
                     <td>
-                        <input type="text" name="location[address1]" value="" placeholder="123 Drury Lane"/>
+                        <input type="text" name="location[address1]" value="<?php echo $location['address1']; ?>"
+                               placeholder="123 Drury Lane"/>
                     </td>
                 </tr>
                 <tr class="form-field">
@@ -84,7 +114,8 @@ $inputClass = "";
                         <label for="location[address2]">Address2:</label>
                     </th>
                     <td>
-                        <input type="text" name="location[address2]" value="" placeholder=""/>
+                        <input type="text" name="location[address2]" value="<?php echo $location['address2']; ?>"
+                               placeholder=""/>
                     </td>
                 </tr>
                 <tr class="form-field form-required">
@@ -92,7 +123,8 @@ $inputClass = "";
                         <label for="location[city]">City:<span class="description">(required)</span></label>
                     </th>
                     <td>
-                        <input type="text" name="location[city]" value="" placeholder="Lincoln"/>
+                        <input type="text" name="location[city]" value="<?php echo $location['city']; ?>"
+                               placeholder="Lincoln"/>
                     </td>
                 </tr>
                 <tr class="form-field form-required">
@@ -102,8 +134,14 @@ $inputClass = "";
                     <td>
                         <select name="location[province]">
 							<?php
-							foreach ( $states as $key => $value ) {
-								echo '<option value="' . $value . '">' . $value . '</option>';
+							foreach ( $states as $state ) {
+								?>
+                                <option
+									<?php if ( $location['province'] == $state ) {
+										echo 'selected="selected"';
+									} ?>
+                                        value="<?php echo $state; ?>"><?php echo $state; ?></option>
+								<?php
 							}
 							?>
                         </select>
@@ -114,15 +152,16 @@ $inputClass = "";
                         <label for="location[country]">Country:</label>
                     </th>
                     <td>
-                        <input type="text" name="location[country]" value="United States"/>
+                        <input type="text" name="location[country]" value="<?php echo $location['country']; ?>"/>
                     </td>
                 </tr>
                 <tr class="form-field form-required">
                     <th scope="row">
-                        <label for="location[postal_code]">Postal Code: <span class="description">(required)</span></label>
+                        <label for="location[postal_code]">Postal Code: <span
+                                    class="description">(required)</span></label>
                     </th>
                     <td>
-                        <input type="text" name="location[postal_code]" value="" placeholder="68508"/>
+                        <input type="text" name="location[postal_code]" value="<?php echo $location['postal_code']; ?>" placeholder="68508"/>
                     </td>
                 </tr>
                 <tr class="form-field">
@@ -130,7 +169,7 @@ $inputClass = "";
                         <label for="location[geometry]">Geometry:</label>
                     </th>
                     <td>
-                        <input type="text" name="location[geometry]" value="" placeholder=""/>
+                        <input type="text" name="location[geometry]" value="<?php echo $location['geometry']; ?>" placeholder=""/>
                     </td>
                 </tr>
                 <tr class="form-field">
@@ -138,7 +177,7 @@ $inputClass = "";
                         <label for="location[place_id]">Google Place Id:</label>
                     </th>
                     <td>
-                        <input type="text" name="location[place_id]" value="" placeholder=""/>
+                        <input type="text" name="location[place_id]" value="<?php echo $location['place_id']; ?>" placeholder=""/>
                     </td>
                 </tr>
                 <tr class="form-field form-required">

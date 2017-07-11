@@ -1,4 +1,17 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
+if ( ! current_user_can( 'manage_options' ) ) {
+	wp_die(
+		'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
+		'<p>' . __( 'Sorry, you are not allowed to list users.' ) . '</p>',
+		403
+	);
+}
+
 $states     = array(
 	"Alabama",
 	"Alaska",
