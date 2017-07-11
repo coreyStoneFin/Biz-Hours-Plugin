@@ -163,11 +163,18 @@ function wp_locations_save() {
 }
 
 function wp_location_format_address( $location ) {
-	$formatted = $location['address1'] . " " . $location['address2'] . ", " . $location['city'] . " " . $location['province'] . " " . $location['postal_code'];
-	if ( ! empty( $location['country'] ) ) {
-		$formatted .= ", " . $location['country'];
-	}
-
+    $formatted="";
+    if(is_array($location)) {
+	    $formatted = $location['address1'] . " " . $location['address2'] . ", " . $location['city'] . " " . $location['province'] . " " . $location['postal_code'];
+	    if ( ! empty( $location['country'] ) ) {
+		    $formatted .= ", " . $location['country'];
+	    }
+    }elseif(is_object($location)){
+	    $formatted = $location->address1 . " " . $location->address2 . ", " . $location->city . " " . $location->province . " " . $location->postal_code;
+	    if ( ! empty( $location->country ) ) {
+		    $formatted .= ", " . $location->country;
+	    }
+    }
 	return $formatted;
 }
 
