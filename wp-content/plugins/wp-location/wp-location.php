@@ -99,20 +99,28 @@ function wp_locations_save() {
 	if ( ! empty( $location ) ) {
 		// disabling alt_id for now
 		try {
-			// Check for NULL Values, and set as such
-			if ( empty( $location['longitude'] ) || empty( $location['latitude'] ) ) {
+			$temp = null;
+			// Check for NULL Values, to see if we even need to run the Query
+			if ( empty( $location['longitude'] ) || empty( $location['latitude'] ) || empty( $location['place_id'] ) ) {
 				// try and get the Geometry from Google
 				$formatted = wp_location_format_address( $location );
 				$temp      = wp_location_geocode( $formatted );
-				if ( $temp != null ) {
+			}
+
+			// if we ran the query
+			if ( $temp != null ) {
+				// are our coordinates empty
+				if ( ( empty( $location['latitude'] ) || empty( $location['longitude'] ) ) ) {
 					$location['latitude']  = floatval( $temp['latitude'] );
 					$location['longitude'] = floatval( $temp['longitude'] );
 				}
+
+				// dont overwrite manually entered place_id
+				if ( empty( $location['place_id'] ) ) {
+					$location['place_id'] = ! empty( $temp['place_id'] ) ? $temp['place_id'] : null;
+				}
 			}
 
-			if ( empty( $location['place_id'] ) ) {
-				$location['place_id'] = null;
-			}
 			if ( empty( $location['alt_ids'] ) ) {
 				$location['alt_ids'] = null;
 			}
@@ -425,7 +433,6 @@ function wpLocationMenuItem() {
 
 // function to geocode address, it will return NULL if unable to geocode address
 function wp_location_geocode( $address ) {
-
 	// url encode the address
 	$address = urlencode( $address );
 
@@ -444,6 +451,7 @@ function wp_location_geocode( $address ) {
 		// get the important data
 		$lati              = $resp['results'][0]['geometry']['location']['lat'];
 		$longi             = $resp['results'][0]['geometry']['location']['lng'];
+		$place_id          = $resp['results'][0]['place_id'];
 		$formatted_address = $resp['results'][0]['formatted_address'];
 
 		// verify if data is complete
@@ -454,6 +462,7 @@ function wp_location_geocode( $address ) {
 			$data_arr['latitude']  = $lati;
 			$data_arr['longitude'] = $longi;
 			$data_arr['formatted'] = $formatted_address;
+			$data_arr['place_id']  = $place_id;
 
 			return $data_arr;
 		}
@@ -483,16 +492,21 @@ function wp_location_map_shortcode( $atts = [] ) {
 			return;
 		}
 
-		$height = array_key_exists("height",$atts)?$atts["height"]:"500px";
-		$width = array_key_exists("width",$atts)?$atts["width"]:"500px";
-		$style = array_key_exists("style",$atts)?$atts["style"].";":"";
+		$height = array_key_exists( "height", $atts ) ? $atts["height"] : "500px";
+		$width  = array_key_exists( "width", $atts ) ? $atts["width"] : "500px";
+		$style  = array_key_exists( "style", $atts ) ? $atts["style"] . ";" : "";
 
-		if(!empty($height)) $style.="height:$height;";
-		if(!empty($width)) $style.="width:$width;";
+		if ( ! empty( $height ) ) {
+			$style .= "height:$height;";
+		}
+		if ( ! empty( $width ) ) {
+			$style .= "width:$width;";
+		}
 		?>
         <h3><?php echo $location->name; ?></h3>
         <span><?php echo wp_location_format_address( $location ); ?></span>
-        <div id="wp-location-map-<?php echo $location->id; ?>" class="wp-location-map" style="<?php echo $style; ?>"></div>
+        <div id="wp-location-map-<?php echo $location->id; ?>" class="wp-location-map"
+             style="<?php echo $style; ?>"></div>
         <script>
             jQuery(document).ready(function () {
                 var loc = new google.maps.LatLng(<?php echo $location->latitude; ?>, <?php echo $location->longitude; ?>);
