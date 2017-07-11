@@ -433,49 +433,19 @@ function wpLocationMenuItem() {
 
 // function to geocode address, it will return NULL if unable to geocode address
 function wp_location_geocode( $address ) {
-	// url encode the address
-	$address = urlencode( $address );
-
-	// google map geocode api url
-	$url = "http://maps.google.com/maps/api/geocode/json?address={$address}";
-
-	// get the json response
-	$resp_json = file_get_contents( $url );
-
-	// decode the json
-	$resp = json_decode( $resp_json, true );
-
-	// response status will be 'OK', if able to geocode given address
-	if ( $resp['status'] == 'OK' ) {
-
-		// get the important data
-		$lati              = $resp['results'][0]['geometry']['location']['lat'];
-		$longi             = $resp['results'][0]['geometry']['location']['lng'];
-		$place_id          = $resp['results'][0]['place_id'];
-		$formatted_address = $resp['results'][0]['formatted_address'];
-
-		// verify if data is complete
-		if ( $lati && $longi && $formatted_address ) {
-
-			// put the data in the array
-			$data_arr              = array();
-			$data_arr['latitude']  = $lati;
-			$data_arr['longitude'] = $longi;
-			$data_arr['formatted'] = $formatted_address;
-			$data_arr['place_id']  = $place_id;
-
-			return $data_arr;
-		}
+	if ( ! class_exists( "google_places_api" ) ) {
+		require_once( "includes/class-google-places-api.php" );
 	}
 
-	return null;
+	return google_places_api::geocode( $address );
 }
 
 function wp_location_map_shortcode( $atts = [] ) {
 	if ( ! empty( $atts ) ) {
-		$key     = "AIzaSyCckc-IRS8AKZK-Hq_qwiq1O02nqLce0-c";
-		$version = "3.exp";
-		wp_enqueue_script( 'google-maps-api', "https://maps.googleapis.com/maps/api/js?key=$key&v=$version" );
+		// include the google js script with apiKey
+		require_once( "includes/class-google-places-api.php" );
+		google_places_api::include_js_script();
+
 		$location = null;
 		if ( array_key_exists( "name", $atts ) ) {
 			// Load location by Name
@@ -531,12 +501,9 @@ function wp_location_map_shortcode( $atts = [] ) {
 
 }
 
-function wp_location_hours_shortcode($atts =[])
-{
+function wp_location_hours_shortcode( $atts = [] ) {
 	if ( ! empty( $atts ) ) {
-		$key     = "AIzaSyCckc-IRS8AKZK-Hq_qwiq1O02nqLce0-c";
-		$version = "3.exp";
-		wp_enqueue_script( 'google-maps-api', "https://maps.googleapis.com/maps/api/js?key=$key&v=$version" );
+		require_once( "includes/class-google-places-api.php" );
 		$location = null;
 		if ( array_key_exists( "name", $atts ) ) {
 			// Load location by Name
@@ -549,12 +516,70 @@ function wp_location_hours_shortcode($atts =[])
 			return;
 		}
 
-		if ( empty( $location ) ) {
+		if ( empty( $location ) || empty( $location->place_id ) ) {
 			return;
 		}
-	}
 
+		$defaultedatts = shortcode_atts( array(
+			'format' => 'long',
+		), $atts );
+
+		$hours = google_places_api::get_place_hours( $location->place_id );
+		switch ( $defaultedatts['format'] ) {
+			case 'long':
+				wp_location_hours_display_long( $hours );
+				break;
+			case 'short':
+				wp_location_hours_display_short( $hours );
+				break;
+			case 'status':
+				wp_location_hours_display_today( $hours );
+				break;
+		}
 	}
+}
+
+
+function wp_location_hours_display_long( $hours ) {
+	?>
+    <div class="wp-location-hours-container">
+        <div class="wp-location-hours-status">
+            <p>Doors are: <?php echo( $hours->open_now ? "Open" : "Closed" ); ?></p>
+        </div>
+        <div class='wp-location-hours-table'>
+			<?php
+			foreach ( $hours->weekday_text as $key => $value ) {
+				?>
+                <div class="wp-location-hours-table-row">
+                    <span class="wp-location-hours-table-column"><?php echo $value; ?></span>
+                </div>
+				<?php
+			}
+			?>
+        </div>
+    </div>
+	<?php
+}
+
+function wp_location_hours_display_short( $hours ) {
+}
+
+function wp_location_hours_display_today( $hours ) {
+	// because googlePlaces API doesn't understand how to make things the same...
+	$day_conversion_table = array( 0 => 5, 1 => 0, 2 => 1, 3 => 2, 4 => 3, 5 => 4, 6 => 6 );
+	?>
+    <div class="wp-location-hours-container">
+        <div class="wp-location-hours-status">
+            <p>Doors are: <?php echo( $hours->open_now ? "Open" : "Closed" ); ?></p>
+        </div>
+        <div class='wp-location-hours-table'>
+            <div class="wp-location-hours-table-row">
+                <span class="wp-location-hours-table-column"><?php echo $hours->weekday_text[ $day_conversion_table[ date( 'w' ) ] ] ?></span>
+            </div>
+        </div>
+    </div>
+	<?php
+}
 
 function google_place_shortcode( $atts = [] ) {
 	include_once 'includes/GooglePlacesAPI.php';

@@ -156,22 +156,22 @@ class GooglePlacesAPI {
 
 	//given a place id return a nice little div with todays hours and possibly the open now
 	function show_store_status( $place ) {
-		$day_conversion_table = array(
-			0 => 5,
-			1 => 0,
-			2 => 1,
-			3 => 2,
-			4 => 3,
-			5 => 4,
-			6 => 6
-		); // because googlePlaces API doesn't understand how to make things the same...
-		$current_time         = new DateTime( "now" );
-		$current_time->setTimezone( new DateTimeZone( 'America/Chicago' ) );
-		$json         = wp_remote_get( $this->base_endpoint . 'placeid=' . $place . '&key=' . $this->apiKey );
-		$place_object = json_decode( $json['body'] );
-		$hours        = $place_object->result->opening_hours;
-		echo "<p>Store Status: " . ( $hours->open_now ? "Open" : "Closed" ) . "</p><p>" . $hours->weekday_text[ $day_conversion_table[ date( 'w', $current_time->getTimestamp() ) ] ] . "</p>";
-	}
+	$day_conversion_table = array(
+		0 => 5,
+		1 => 0,
+		2 => 1,
+		3 => 2,
+		4 => 3,
+		5 => 4,
+		6 => 6
+	); // because googlePlaces API doesn't understand how to make things the same...
+	$current_time         = new DateTime( "now" );
+	$current_time->setTimezone( new DateTimeZone( 'America/Chicago' ) );
+	$json         = wp_remote_get( $this->base_endpoint . 'placeid=' . $place . '&key=' . $this->apiKey );
+	$place_object = json_decode( $json['body'] );
+	$hours        = $place_object->result->opening_hours;
+	echo "<p>Store Status: " . ( $hours->open_now ? "Open" : "Closed" ) . "</p><p>" . $hours->weekday_text[ $day_conversion_table[ date( 'w', $current_time->getTimestamp() ) ] ] . "</p>";
+}
 
 	function show_store_status_all( $place ) {
 		$current_time = new DateTime( "now" );
