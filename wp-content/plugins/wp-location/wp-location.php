@@ -15,13 +15,6 @@ if ( ! defined( "wpLocationTable" ) ) {
 	include_once "includes/Constants.php";
 }
 
-function locations_enqueue_styles() {
-	if ( is_page( 'checkout' ) ) {
-		wp_register_script( 'locations_script', plugin_dir_url( __FILE__ ) . 'pickup_location_blues.js?version=0.3', array(), false, true );
-		wp_enqueue_script( 'locations_script' );
-	}
-}
-
 function SFCP_getLocations() {
 	$store_locations = array();
 	$query           = get_posts(
@@ -43,6 +36,46 @@ function wp_locations_view() {
 	} catch ( Exception $e ) {
 		var_dump( $e );
 	}
+}
+
+function get_wp_location_by_id( $id ) {
+	global $wpdb;
+	$locationRow     = $wpdb->get_row( "Select * from " . $wpdb->prefix . WP_LOCATION_TABLE . " where id = " . $id . " LIMIT 1", ARRAY_A );
+	$gp              = new wp_location();
+	$gp->id          = $locationRow["id"];
+	$gp->place_id    = $locationRow["place_id"];
+	$gp->alt_ids     = $locationRow["alt_ids"];
+	$gp->name        = $locationRow["name"];
+	$gp->latitude    = $locationRow["latitude"];
+	$gp->longitude   = $locationRow["longitude"];
+	$gp->address1    = $locationRow["address1"];
+	$gp->address2    = $locationRow["address2"];
+	$gp->city        = $locationRow["city"];
+	$gp->province    = $locationRow["province"];
+	$gp->country     = $locationRow["country"];
+	$gp->postal_code = $locationRow["postal_code"];
+
+	return $gp;
+}
+
+function get_wp_location_by_name( $name ) {
+	global $wpdb;
+	$locationRow     = $wpdb->get_row( "Select * from " . $wpdb->prefix . WP_LOCATION_TABLE . " where name = " . $name . " LIMIT 1", ARRAY_A );
+	$gp              = new wp_location();
+	$gp->id          = $locationRow["id"];
+	$gp->place_id    = $locationRow["place_id"];
+	$gp->alt_ids     = $locationRow["alt_ids"];
+	$gp->name        = $locationRow["name"];
+	$gp->latitude    = $locationRow["latitude"];
+	$gp->longitude   = $locationRow["longitude"];
+	$gp->address1    = $locationRow["address1"];
+	$gp->address2    = $locationRow["address2"];
+	$gp->city        = $locationRow["city"];
+	$gp->province    = $locationRow["province"];
+	$gp->country     = $locationRow["country"];
+	$gp->postal_code = $locationRow["postal_code"];
+
+	return $gp;
 }
 
 function wp_locations_add() {
@@ -77,7 +110,7 @@ function wp_locations_save() {
 		// disabling alt_id for now
 		try {
 			// Check for NULL Values, and set as such
-			if ( empty( $location['longitude'] )||empty( $location['latitude'] ) ) {
+			if ( empty( $location['longitude'] ) || empty( $location['latitude'] ) ) {
 				// try and get the Geometry from Google
 				$formatted = wp_location_format_address( $location );
 				$temp      = wp_location_geocode( $formatted );
@@ -113,7 +146,7 @@ function wp_locations_save() {
 				$format['country']     = "%s";
 				$format['id']          = "%d";
 				$format['latitude']    = "%f";
-				$format['longitude']    = "%f";
+				$format['longitude']   = "%f";
 				$format['name']        = "%s";
 				$format['province']    = "%s";
 				$format['place_id']    = "%s";
@@ -163,7 +196,6 @@ function wp_locations_save_failure() {
     </div>
 	<?php
 }
-
 
 function contactpage_handler( $atts ) {
 	/**
@@ -368,73 +400,6 @@ function contactpage_function() {
 	return $contactp_output;
 }
 
-function giar_activate() {
-	flush_rewrite_rules();
-}
-
-
-function dt_register_api_hooks() {
-	$namespace = 'give-it-a-rest/v1';
-
-	register_rest_route( $namespace, '/list-posts/', array(
-		'methods'  => 'GET',
-		'callback' => 'giar_get_posts',
-	) );
-
-}
-
-function giar_get_posts() {
-	if ( 0 || false === ( $return = get_transient( 'dt_all_posts' ) ) ) {
-		$query     = apply_filters( 'giar_get_posts_query', array(
-			'numberposts' => - 1,
-			'post_type'   => 'sf-store-locations',
-			'post_status' => 'publish',
-		) );
-		$all_posts = get_posts( $query );
-		$return    = array();
-
-		foreach ( $all_posts as $post ) {
-			$return[] = array(
-				'ID'        => $post->ID,
-				'title'     => $post->post_title,
-				'permalink' => get_permalink( $post->ID ),
-			);
-		}
-		$data['stores'] = $return;
-		// cache for 10 minutes
-		set_transient( 'giar_all_posts', $return, apply_filters( 'giar_posts_ttl', 60 * 10 ) );
-	}
-	$response = new WP_REST_Response( $data );
-	$response->header( 'Access-Control-Allow-Origin', apply_filters( 'giar_access_control_allow_origin', '*' ) );
-
-	return $response;
-}
-
-
-//Store location custom post type
-//function store_location_init()
-//{
-//    $args = array(
-//        'label' => 'Store Locations',
-//        'public' => false,
-//        'show_ui' => true,
-////        'capability_type' => 'post',
-////        'hierarchical' => false,
-////        'rewrite' => array('slug' => 'store-locations'),
-////        'query_var' => true,
-//        'menu_icon' => 'dashicons-video-alt',
-//        'supports' => array(
-//            'title',
-//            'custom-fields',)
-//    );
-//    register_post_type('sf-store-locations', $args);
-//}
-
-// add_action('init', 'store_location_init');
-/**
- * Something to do with creating a store location
- */
-
 // Add Admin Menu Tab
 function wpLocationMenuItem() {
 	// add Store Location Main Menu
@@ -459,15 +424,6 @@ function wpLocationMenuItem() {
 		"wp_locations_edit"
 	);
 }
-
-
-//add_action( 'add_meta_boxes', 'add_events_metaboxes' );
-
-//function add_events_metaboxes() {
-//	add_meta_box( 'wpt_events_location', 'Location Address', 'wpt_events_location', 'sf-store-locations', 'normal', 'default' );
-//}
-
-//add_action( 'save_post', 'wpt_save_events_meta', 1, 2 ); // save the custom fields
 
 // function to geocode address, it will return NULL if unable to geocode address
 function wp_location_geocode( $address ) {
@@ -508,11 +464,56 @@ function wp_location_geocode( $address ) {
 	return null;
 }
 
-//return apply_filters( 'woocommerce_order_shipping_method', implode( ', ', $labels ), $this )
-//add_filter( 'woocommerce_order_shipping_method', 'add_store_to_via',10 , 2);
-//function add_store_to_via ($lables, $this){
-//
-//}
+function wp_location_map_shortcode( $atts = [] ) {
+	if ( ! empty( $atts ) ) {
+		$key     = "AIzaSyCckc-IRS8AKZK-Hq_qwiq1O02nqLce0-c";
+		$version = "3.exp";
+		$sensor  = "false";
+		wp_enqueue_script( 'google-maps-api', "https://maps.googleapis.com/maps/api/js?key=$key&v=$version&sensor=$sensor" );
+		$location = null;
+		if ( array_key_exists( "name", $atts ) ) {
+			// Load location by Name
+			$location = get_wp_location_by_name( $atts["name"] );
+		} elseif ( array_key_exists( "id", $atts ) ) {
+			// load location by Id
+			$location = get_wp_location_by_id( $atts['id'] );
+		} else {
+			// throw exception
+			return;
+		}
+
+		if ( empty( $location ) ) {
+			return;
+		}
+
+		?>
+        <h3><?php echo $location->name; ?></h3>
+        <span><?php echo wp_location_format_address($location); ?></span>
+        <div id="map"></div>
+        <script>
+            function initMap() {
+                var loc = new google.maps.LatLng(<?php echo $location->latitude; ?>, <?php echo $location->longitude; ?>);
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 10,
+                    center: loc
+                });
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                        map.setCenter(initialLocation);
+                    });
+                }
+                var marker = new google.maps.Marker({
+                    position: loc,
+                    map: map
+                });
+            }
+            initMap();
+        </script>
+		<?php
+	}
+
+}
 
 function google_place_shortcode( $atts = [] ) {
 	include_once 'includes/GooglePlacesAPI.php';
@@ -543,7 +544,6 @@ function google_place_delivery_time_shortcode( $atts ) {
 	return $dummy->local_delivery_time_select_for_place();
 }
 
-
 function google_place_business_hours_shortcode( $atts ) {
 	$a = shortcode_atts( array(
 		'place_key' => '',
@@ -569,7 +569,6 @@ function google_place_business_status_shortcode( $atts ) {
 
 	return $dummy->show_store_status( $a['place_key'] );
 }
-
 
 function wpLocationInstall() {
 	global $wpdb;
@@ -600,19 +599,17 @@ function wpLocationInstall() {
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta( $sql );
 	add_option( 'wp_location_db_version', $wp_location_db_version );
+	flush_rewrite_rules();
 }
 
 
 // do all the registration, AFTER ALL the functions have been registered so we dont run into a race Condition problem
-add_action( 'wp_enqueue_scripts', 'locations_enqueue_styles' );
-
-//tell wordpress to register the demolistposts shortcode
-add_shortcode( "contact-page-shortcode", "contactpage_handler" );
-add_action( 'admin_post_wp_locations_save', 'wp_locations_save' );
-add_action( 'rest_api_init', 'dt_register_api_hooks' );
 
 // Add Menu Item for Stroe locations
 add_action( 'admin_menu', 'wpLocationMenuItem' );
+add_action( 'admin_post_wp_locations_save', 'wp_locations_save' );
+
+add_shortcode( 'wp_location_map', 'wp_location_map_shortcode' );
 add_shortcode( 'googleplace', 'google_place_shortcode' );
 add_shortcode( 'googleplace_pickup', 'google_place_pickup_time_shortcode' );
 add_shortcode( 'googleplace_delivery', 'google_place_delivery_time_shortcode' );
@@ -621,5 +618,20 @@ add_shortcode( 'googleplace_business_hours', 'google_place_business_hours_shortc
 
 // Install or Update the Table
 register_activation_hook( __FILE__, 'wpLocationInstall' );
-register_activation_hook( __FILE__, 'giar_activate' );
+
+//return apply_filters( 'woocommerce_order_shipping_method', implode( ', ', $labels ), $this )
+//add_filter( 'woocommerce_order_shipping_method', 'add_store_to_via',10 , 2);
+//function add_store_to_via ($lables, $this){
+//
+//}
+//tell wordpress to register the demolistposts shortcode
+// add_shortcode( "contact-page-shortcode", "contactpage_handler" );
+// add_action( 'wp_enqueue_scripts', 'locations_enqueue_styles' );
+//function locations_enqueue_styles() {
+//	if ( is_page( 'checkout' ) ) {
+//		wp_register_script( 'locations_script', plugin_dir_url( __FILE__ ) . 'pickup_location_blues.js?version=0.3', array(), false, true );
+//		wp_enqueue_script( 'locations_script' );
+//	}
+//}
+
 ?>
