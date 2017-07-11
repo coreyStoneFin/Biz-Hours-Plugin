@@ -49,8 +49,8 @@ function get_wp_location_by_id( $id ) {
 
 function get_wp_location_by_name( $name ) {
 	global $wpdb;
-	$sql = $wpdb->prepare("Select * from " . $wpdb->prefix . WP_LOCATION_TABLE . " where name = %s LIMIT 1",$name);
-	$locationRow     = $wpdb->get_row($sql , ARRAY_A );
+	$sql             = $wpdb->prepare( "Select * from " . $wpdb->prefix . WP_LOCATION_TABLE . " where name = %s LIMIT 1", $name );
+	$locationRow     = $wpdb->get_row( $sql, ARRAY_A );
 	$gp              = new wp_location();
 	$gp->id          = $locationRow["id"];
 	$gp->place_id    = $locationRow["place_id"];
@@ -163,18 +163,19 @@ function wp_locations_save() {
 }
 
 function wp_location_format_address( $location ) {
-    $formatted="";
-    if(is_array($location)) {
-	    $formatted = $location['address1'] . " " . $location['address2'] . ", " . $location['city'] . " " . $location['province'] . " " . $location['postal_code'];
-	    if ( ! empty( $location['country'] ) ) {
-		    $formatted .= ", " . $location['country'];
-	    }
-    }elseif(is_object($location)){
-	    $formatted = $location->address1 . " " . $location->address2 . ", " . $location->city . " " . $location->province . " " . $location->postal_code;
-	    if ( ! empty( $location->country ) ) {
-		    $formatted .= ", " . $location->country;
-	    }
-    }
+	$formatted = "";
+	if ( is_array( $location ) ) {
+		$formatted = $location['address1'] . " " . $location['address2'] . ", " . $location['city'] . " " . $location['province'] . " " . $location['postal_code'];
+		if ( ! empty( $location['country'] ) ) {
+			$formatted .= ", " . $location['country'];
+		}
+	} elseif ( is_object( $location ) ) {
+		$formatted = $location->address1 . " " . $location->address2 . ", " . $location->city . " " . $location->province . " " . $location->postal_code;
+		if ( ! empty( $location->country ) ) {
+			$formatted .= ", " . $location->country;
+		}
+	}
+
 	return $formatted;
 }
 
@@ -485,12 +486,12 @@ function wp_location_map_shortcode( $atts = [] ) {
 
 		?>
         <h3><?php echo $location->name; ?></h3>
-        <span><?php echo wp_location_format_address($location); ?></span>
-        <div id="map"></div>
+        <span><?php echo wp_location_format_address( $location ); ?></span>
+        <div id="wp-location-map-<?php echo $location->id; ?>"></div>
         <script>
-            function initMap() {
+            jQuery(function () {
                 var loc = new google.maps.LatLng(<?php echo $location->latitude; ?>, <?php echo $location->longitude; ?>);
-                var map = new google.maps.Map(document.getElementById('map'), {
+                var map = new google.maps.Map(document.getElementById('wp-location-map-<?php echo $location->id; ?>'), {
                     zoom: 10,
                     center: loc
                 });
@@ -504,8 +505,7 @@ function wp_location_map_shortcode( $atts = [] ) {
                     position: loc,
                     map: map
                 });
-            }
-            initMap();
+            });
         </script>
 		<?php
 	}
