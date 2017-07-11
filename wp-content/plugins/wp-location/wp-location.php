@@ -531,6 +531,31 @@ function wp_location_map_shortcode( $atts = [] ) {
 
 }
 
+function wp_location_hours_shortcode($atts =[])
+{
+	if ( ! empty( $atts ) ) {
+		$key     = "AIzaSyCckc-IRS8AKZK-Hq_qwiq1O02nqLce0-c";
+		$version = "3.exp";
+		wp_enqueue_script( 'google-maps-api', "https://maps.googleapis.com/maps/api/js?key=$key&v=$version" );
+		$location = null;
+		if ( array_key_exists( "name", $atts ) ) {
+			// Load location by Name
+			$location = get_wp_location_by_name( $atts["name"] );
+		} elseif ( array_key_exists( "id", $atts ) ) {
+			// load location by Id
+			$location = get_wp_location_by_id( $atts['id'] );
+		} else {
+			// throw exception
+			return;
+		}
+
+		if ( empty( $location ) ) {
+			return;
+		}
+	}
+
+	}
+
 function google_place_shortcode( $atts = [] ) {
 	include_once 'includes/GooglePlacesAPI.php';
 	$GpApi = new GooglePlacesAPI();
@@ -626,11 +651,11 @@ add_action( 'admin_menu', 'wpLocationMenuItem' );
 add_action( 'admin_post_wp_locations_save', 'wp_locations_save' );
 
 add_shortcode( 'wp_location_map', 'wp_location_map_shortcode' );
-//add_shortcode( 'googleplace', 'google_place_shortcode' );
+add_shortcode( 'wp_location_hours', 'google_place_shortcode' );
 //add_shortcode( 'googleplace_pickup', 'google_place_pickup_time_shortcode' );
 //add_shortcode( 'googleplace_delivery', 'google_place_delivery_time_shortcode' );
 //add_shortcode( 'googleplace_business_status', 'google_place_business_status_shortcode' );
-//add_shortcode( 'googleplace_business_hours', 'google_place_business_hours_shortcode' );
+//add_shortcode( 'wp_location_hours', 'google_place_business_hours_shortcode' );
 
 // Install or Update the Table
 register_activation_hook( __FILE__, 'wpLocationInstall' );
