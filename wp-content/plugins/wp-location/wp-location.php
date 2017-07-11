@@ -15,7 +15,6 @@ if ( ! defined( "wpLocationTable" ) ) {
 	include_once "includes/Constants.php";
 }
 
-add_action( 'wp_enqueue_scripts', 'locations_enqueue_styles' );
 function locations_enqueue_styles() {
 	if ( is_page( 'checkout' ) ) {
 		wp_register_script( 'locations_script', plugin_dir_url( __FILE__ ) . 'pickup_location_blues.js?version=0.3', array(), false, true );
@@ -23,8 +22,6 @@ function locations_enqueue_styles() {
 	}
 }
 
-//tell wordpress to register the demolistposts shortcode
-add_shortcode( "contact-page-shortcode", "contactpage_handler" );
 function SFCP_getLocations() {
 	$store_locations = array();
 	$query           = get_posts(
@@ -58,7 +55,7 @@ function wp_locations_add() {
 
 function wp_locations_edit( $location_id ) {
 	try {
-        if ( ! defined( "wpLocationTable" ) ) {
+		if ( ! defined( "wpLocationTable" ) ) {
 			include_once "includes/Constants.php";
 		}
 		require_once( "pages/wp-location-edit.php" );
@@ -81,7 +78,10 @@ function wp_locations_save() {
 		try {
 			// Check for NULL Values, and set as such
 			if ( empty( $location['geometry'] ) ) {
-				$location['geometry'] = null;
+				// try and get the Geometry from Google
+				$formatted = wp_location_format_address( $location );
+
+				$location['geometry'] = wp_location_geocode( $formatted );
 			}
 			if ( empty( $location['place_id'] ) ) {
 				$location['place_id'] = null;
@@ -115,7 +115,7 @@ function wp_locations_save() {
 				$format['postal_code'] = "%s";
 
 				// just in case i f*ck up something above
-				ksort($format);
+				ksort( $format );
 			}
 
 			$wpdb->replace( $wpdb->prefix . WP_LOCATION_TABLE, $location, $format );
@@ -134,6 +134,15 @@ function wp_locations_save() {
 
 }
 
+function wp_location_format_address( $location ) {
+	$formatted = $location['address1'] . " " . $location['address2'] . ", " . $location['city'] . " " . $location['province'] . " " . $location['postal_code'];
+	if ( ! empty( $location['country'] ) ) {
+		$formatted .= ", " . $location['country'];
+	}
+
+	return $formatted;
+}
+
 function wp_locations_save_success() {
 	?>
     <div class="notice notice-success is-dismissible">
@@ -150,7 +159,6 @@ function wp_locations_save_failure() {
 	<?php
 }
 
-add_action( 'admin_post_wp_locations_save', 'wp_locations_save' );
 
 function contactpage_handler( $atts ) {
 	/**
@@ -355,13 +363,11 @@ function contactpage_function() {
 	return $contactp_output;
 }
 
-register_activation_hook( __FILE__, 'giar_activate' );
 function giar_activate() {
 	flush_rewrite_rules();
 }
 
 
-add_action( 'rest_api_init', 'dt_register_api_hooks' );
 function dt_register_api_hooks() {
 	$namespace = 'give-it-a-rest/v1';
 
@@ -427,9 +433,9 @@ function giar_get_posts() {
 // Add Admin Menu Tab
 function wpLocationMenuItem() {
 	// add Store Location Main Menu
-    add_menu_page( 'Store Locations', 'Store Locations', 'manage_options', 'wp-location', 'wp_locations_view' );
+	add_menu_page( 'Store Locations', 'Store Locations', 'manage_options', 'wp-location', 'wp_locations_view' );
 
-    // Add "Add Location" SubMenu
+	// Add "Add Location" SubMenu
 	add_submenu_page(
 		"wp-location",
 		"Add New Location",
@@ -449,7 +455,6 @@ function wpLocationMenuItem() {
 	);
 }
 
-add_action( 'admin_menu', 'wpLocationMenuItem' );
 
 //add_action( 'add_meta_boxes', 'add_events_metaboxes' );
 
@@ -459,8 +464,8 @@ add_action( 'admin_menu', 'wpLocationMenuItem' );
 
 //add_action( 'save_post', 'wpt_save_events_meta', 1, 2 ); // save the custom fields
 
-// function to geocode address, it will return false if unable to geocode address
-function geocode( $address ) {
+// function to geocode address, it will return NULL if unable to geocode address
+function wp_location_geocode( $address ) {
 
 	// url encode the address
 	$address = urlencode( $address );
@@ -486,24 +491,16 @@ function geocode( $address ) {
 		if ( $lati && $longi && $formatted_address ) {
 
 			// put the data in the array
-			$data_arr = array();
-
-			array_push(
-				$data_arr,
-				$lati,
-				$longi,
-				$formatted_address
-			);
+			$data_arr              = array();
+			$data_arr['latitude']  = $lati;
+			$data_arr['longitude'] = $longi;
+			$data_arr['formatted'] = $formatted_address;
 
 			return $data_arr;
-
-		} else {
-			return false;
 		}
-
-	} else {
-		return false;
 	}
+
+	return null;
 }
 
 //return apply_filters( 'woocommerce_order_shipping_method', implode( ', ', $labels ), $this )
@@ -518,7 +515,6 @@ function google_place_shortcode( $atts = [] ) {
 	$GpApi->Fetch_Place();
 }
 
-add_shortcode( 'googleplace', 'google_place_shortcode' );
 
 function google_place_pickup_time_shortcode( $atts ) {
 	$a = shortcode_atts( array(
@@ -531,14 +527,6 @@ function google_place_pickup_time_shortcode( $atts ) {
 	return $dummy->pickup_time_select_for_place( $a['place_key'] );
 }
 
-add_shortcode( 'googleplace_pickup', 'google_place_pickup_time_shortcode' );
-function me_map() {
-	//require_once 'includes/Map.js';
-	include_once 'html/mymap.html';
-	//return $dummy->local_delivery_time_select_for_place();
-}
-
-add_shortcode( 'me_map', 'me_map' );
 function google_place_delivery_time_shortcode( $atts ) {
 	$a = shortcode_atts( array(
 		'place_key' => '',
@@ -550,7 +538,6 @@ function google_place_delivery_time_shortcode( $atts ) {
 	return $dummy->local_delivery_time_select_for_place();
 }
 
-add_shortcode( 'googleplace_delivery', 'google_place_delivery_time_shortcode' );
 
 function google_place_business_hours_shortcode( $atts ) {
 	$a = shortcode_atts( array(
@@ -563,7 +550,6 @@ function google_place_business_hours_shortcode( $atts ) {
 	return $dummy->get_condensed_store_hours( $a['place_key'] );
 }
 
-add_shortcode( 'googleplace_business_hours', 'google_place_business_hours_shortcode' );
 /**
  * to use these shortcodes, must enter it like this
  * [tag attribute="the value"]some text[/tag]
@@ -579,7 +565,6 @@ function google_place_business_status_shortcode( $atts ) {
 	return $dummy->show_store_status( $a['place_key'] );
 }
 
-add_shortcode( 'googleplace_business_status', 'google_place_business_status_shortcode' );
 
 function wpLocationInstall() {
 	global $wpdb;
@@ -612,6 +597,24 @@ function wpLocationInstall() {
 	add_option( 'wp_location_db_version', $wp_location_db_version );
 }
 
+
+// do all the registration, AFTER ALL the functions have been registered so we dont run into a race Condition problem
+add_action( 'wp_enqueue_scripts', 'locations_enqueue_styles' );
+
+//tell wordpress to register the demolistposts shortcode
+add_shortcode( "contact-page-shortcode", "contactpage_handler" );
+add_action( 'admin_post_wp_locations_save', 'wp_locations_save' );
+add_action( 'rest_api_init', 'dt_register_api_hooks' );
+
+// Add Menu Item for Stroe locations
+add_action( 'admin_menu', 'wpLocationMenuItem' );
+add_shortcode( 'googleplace', 'google_place_shortcode' );
+add_shortcode( 'googleplace_pickup', 'google_place_pickup_time_shortcode' );
+add_shortcode( 'googleplace_delivery', 'google_place_delivery_time_shortcode' );
+add_shortcode( 'googleplace_business_status', 'google_place_business_status_shortcode' );
+add_shortcode( 'googleplace_business_hours', 'google_place_business_hours_shortcode' );
+
 // Install or Update the Table
 register_activation_hook( __FILE__, 'wpLocationInstall' );
+register_activation_hook( __FILE__, 'giar_activate' );
 ?>

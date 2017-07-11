@@ -188,7 +188,7 @@ $inputClass = "";
                 <tr class="form-field form-required">
                     <td colspan="2">
                         <button value="Save Location" type="submit">Save Location</button>
-                        <button value="Cancel" type="button" onclick="window.location=\"<?php echo admin_url("admin.php?page=wp-location"); ?>\"">Cancel</button>
+                        <button value="Cancel" type="button" onClick="window.location='<?php echo admin_url("admin.php?page=wp-location"); ?>'">Cancel</button>
                     </td>
                 </tr>
                 </tbody>
