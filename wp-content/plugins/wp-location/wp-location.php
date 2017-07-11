@@ -466,8 +466,7 @@ function wp_location_map_shortcode( $atts = [] ) {
 	if ( ! empty( $atts ) ) {
 		$key     = "AIzaSyCckc-IRS8AKZK-Hq_qwiq1O02nqLce0-c";
 		$version = "3.exp";
-		$sensor  = "false";
-		wp_enqueue_script( 'google-maps-api', "https://maps.googleapis.com/maps/api/js?key=$key&v=$version&sensor=$sensor" );
+		wp_enqueue_script( 'google-maps-api', "https://maps.googleapis.com/maps/api/js?key=$key&v=$version" );
 		$location = null;
 		if ( array_key_exists( "name", $atts ) ) {
 			// Load location by Name
@@ -484,12 +483,18 @@ function wp_location_map_shortcode( $atts = [] ) {
 			return;
 		}
 
+		$height = array_key_exists("height",$atts)?$atts["height"]:"500px";
+		$width = array_key_exists("width",$atts)?$atts["width"]:"500px";
+		$style = array_key_exists("style",$atts)?$atts["style"].";":"";
+
+		if(!empty($height)) $style."height=$height;";
+		if(!empty($width)) $style."width=$width;";
 		?>
         <h3><?php echo $location->name; ?></h3>
         <span><?php echo wp_location_format_address( $location ); ?></span>
-        <div id="wp-location-map-<?php echo $location->id; ?>"></div>
+        <div id="wp-location-map-<?php echo $location->id; ?>" class="wp-location-map" style="<?php echo $style; ?>"></div>
         <script>
-            jQuery(function () {
+            jQuery(document).ready(function () {
                 var loc = new google.maps.LatLng(<?php echo $location->latitude; ?>, <?php echo $location->longitude; ?>);
                 var map = new google.maps.Map(document.getElementById('wp-location-map-<?php echo $location->id; ?>'), {
                     zoom: 10,
