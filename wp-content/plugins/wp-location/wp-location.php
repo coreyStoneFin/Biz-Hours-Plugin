@@ -487,8 +487,8 @@ function wp_location_map_shortcode( $atts = [] ) {
 		$width = array_key_exists("width",$atts)?$atts["width"]:"500px";
 		$style = array_key_exists("style",$atts)?$atts["style"].";":"";
 
-		if(!empty($height)) $style."height=$height;";
-		if(!empty($width)) $style."width=$width;";
+		if(!empty($height)) $style."height:$height;";
+		if(!empty($width)) $style."width:$width;";
 		?>
         <h3><?php echo $location->name; ?></h3>
         <span><?php echo wp_location_format_address( $location ); ?></span>
