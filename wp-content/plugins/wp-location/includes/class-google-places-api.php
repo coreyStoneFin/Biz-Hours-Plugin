@@ -64,14 +64,15 @@ class google_places_api {
 
 		try {
 			$place_object = json_decode( $json['body'] );
+			print_r( $place_object );
+
 			return $place_object->result->opening_hours;
 		} catch ( Exception $e ) {
 			return null;
 		}
 	}
 
-	function get_condensed_store_hours( $place ) {
-
+	public static function condense_weekday_text( $hours ) {
 		$day_conversion_table = array(
 			0 => "Sun",
 			1 => "Mon",
@@ -82,18 +83,8 @@ class google_places_api {
 			6 => "Sat"
 		);
 
-		// Get the current time and make it this timezone
-		$current_time = new DateTime( "now" );
-		$current_time->setTimezone( new DateTimeZone( 'America/Chicago' ) );
-
-		// Fetch business hours from Google Places API using given $place id
-		$json         = wp_remote_get( self::$place_endpoint . 'placeid=' . $place . '&key=' . self::$apiKey );
-		$place_object = json_decode( $json['body'] );
-		$hours        = $place_object->result->opening_hours;
-
-
-		$days_to_hours = array();
-
+		$days_to_hours          = array();
+		$condensed_weekday_text = array();
 		foreach ( $hours->periods as $day => $business_hours ) {
 			foreach ( $business_hours as $type => $info ) {
 				$days_to_hours[ $info->day ][ $type ] = $info->time;
@@ -106,7 +97,7 @@ class google_places_api {
 			$matched = false;
 
 			foreach ( $timespans_to_days as $groupID => $grouping ) {
-				if ( $this->sameSpan( $grouping, $times ) ) {
+				if ( self::sameSpan( $grouping, $times ) ) {
 					$timespans_to_days[ $groupID ]['days'][] = $day;
 					$matched                                 = true;
 
@@ -118,7 +109,6 @@ class google_places_api {
 				$new                 = $times;
 				$new['days'][]       = $day;
 				$timespans_to_days[] = $new;
-
 			}
 		}
 
@@ -130,7 +120,6 @@ class google_places_api {
 			}
 		}
 
-		echo "<table>";
 		$start_day       = false;
 		$end_day         = false;
 		$groupingID      = false;
@@ -164,13 +153,13 @@ class google_places_api {
 					$date_string = $day_conversion_table[ $start_day ] . "-" . $day_conversion_table[ $end_day ] . ": " . $time_string;
 				}
 
-				echo "<tr><td>$date_string</td></tr>";
+				$condensed_weekday_text[] = $date_string;
 
 				if ( $separate_sunday ) {
-					$sundayGroupID      = $day_to_group[0];
-					$sunday_time_string = date( "g:i A", strtotime( $timespans_to_days[ $sundayGroupID ]['open'] ) ) . " - " . date( "g:i A", strtotime( $timespans_to_days[ $sundayGroupID ]['close'] ) );
-					$date_string        = $day_conversion_table[0] . ": " . $sunday_time_string;
-					echo "<tr><td>$date_string</td></tr>";
+					$sundayGroupID            = $day_to_group[0];
+					$sunday_time_string       = date( "g:i A", strtotime( $timespans_to_days[ $sundayGroupID ]['open'] ) ) . " - " . date( "g:i A", strtotime( $timespans_to_days[ $sundayGroupID ]['close'] ) );
+					$date_string              = $day_conversion_table[0] . ": " . $sunday_time_string;
+					$condensed_weekday_text[] = $date_string;
 				}
 
 				// Reset variables
@@ -180,12 +169,10 @@ class google_places_api {
 			}
 		}
 
-		echo "</table>";
-
-		return false;
+		return $condensed_weekday_text;
 	}
 
-	function sameSpan( $span1, $span2 ) {
+	protected static function sameSpan( $span1, $span2 ) {
 		return ( ( $span1['close'] === $span2['close'] ) && ( $span1['open'] === $span2['open'] ) );
 	}
 }

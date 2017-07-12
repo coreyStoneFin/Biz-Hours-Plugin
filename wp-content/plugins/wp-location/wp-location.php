@@ -501,76 +501,78 @@ function wp_location_map_shortcode( $atts = [] ) {
 
 }
 
+
+function wp_location_hours_shortcode( $atts = [] ) {
+	if ( empty( $atts ) ) {
+		// should throw exception
+		return;
+	}
+
+	require_once( "includes/class-google-places-api.php" );
+	$location = null;
+	if ( array_key_exists( "name", $atts ) ) {
+		// Load location by Name
+		$location = get_wp_location_by_name( $atts["name"] );
+	} elseif ( array_key_exists( "id", $atts ) ) {
+		// load location by Id
+		$location = get_wp_location_by_id( $atts['id'] );
+	} else {
+		// throw exception
+		return;
+	}
+
+	if ( empty( $location ) || empty( $location->place_id ) ) {
+		return;
+	}
+
+	$defaultedatts = shortcode_atts( array(
+		"type" => "long",
+	), $atts );
+
+	$hours = google_places_api::get_place_hours( $location->place_id );
+	if ( empty( $hours ) ) {
+		?>
+        <div class="wp-location-hours-container">
+            <div class="wp-location-hours-status">
+                <p>Failed to Load Open Hours for Location</p>
+            </div>
+        </div>
+		<?php
+		return;
+	}
+
+	switch ( $defaultedatts['format'] ) {
+		case 'long':
+			wp_location_hours_display_long( $hours );
+			break;
+		case 'short':
+			wp_location_hours_display_short( $hours );
+			break;
+		case 'status':
+			wp_location_hours_display_today( $hours );
+			break;
+	}
+
+}
+
 function wp_location_hours_short_shortcode( $atts = [] ) {
 	if ( array_key_exists( "name", $atts ) || array_key_exists( "id", $atts ) ) {
 		$atts["type"] = "short";
-
-		return wp_location_hours_shortcode( $atts );
+		wp_location_hours_shortcode( $atts );
 	}
 }
 
 function wp_location_hours_long_shortcode( $atts = [] ) {
 	if ( array_key_exists( "name", $atts ) || array_key_exists( "id", $atts ) ) {
 		$atts["type"] = "long";
-
-		return wp_location_hours_shortcode( $atts );
+		wp_location_hours_shortcode( $atts );
 	}
 }
 
 function wp_location_hours_today_shortcode( $atts = [] ) {
 	if ( array_key_exists( "name", $atts ) || array_key_exists( "id", $atts ) ) {
 		$atts["type"] = "today";
-
-		return wp_location_hours_shortcode( $atts );
-	}
-}
-
-function wp_location_hours_shortcode( $atts = [] ) {
-	if ( ! empty( $atts ) ) {
-		require_once( "includes/class-google-places-api.php" );
-		$location = null;
-		if ( array_key_exists( "name", $atts ) ) {
-			// Load location by Name
-			$location = get_wp_location_by_name( $atts["name"] );
-		} elseif ( array_key_exists( "id", $atts ) ) {
-			// load location by Id
-			$location = get_wp_location_by_id( $atts['id'] );
-		} else {
-			// throw exception
-			return;
-		}
-
-		if ( empty( $location ) || empty( $location->place_id ) ) {
-			return;
-		}
-
-		$defaultedatts = shortcode_atts( array(
-			'type' => 'long',
-		), $atts );
-
-		$hours = google_places_api::get_place_hours( $location->place_id );
-		if ( empty( $hours ) ) {
-			?>
-            <div class="wp-location-hours-container">
-                <div class="wp-location-hours-status">
-                    <p>Failed to Load Open Hours for Location</p>
-                </div>
-            </div>
-			<?php
-            return;
-		}
-
-		switch ( $defaultedatts['format'] ) {
-			case 'long':
-				wp_location_hours_display_long( $hours );
-				break;
-			case 'short':
-				wp_location_hours_display_short( $hours );
-				break;
-			case 'status':
-				wp_location_hours_display_today( $hours );
-				break;
-		}
+		wp_location_hours_shortcode( $atts );
 	}
 }
 
@@ -602,8 +604,27 @@ function wp_location_hours_display_short( $hours ) {
 	if ( empty( $hours ) ) {
 		return;
 	}
-	print_r($hours);
 
+	// group days by consistent hours
+	$condensed_text = condense_weekday_text( $hours );
+	?>
+    <div class="wp-location-hours-container">
+        <div class="wp-location-hours-status">
+            <p>Doors are: <?php echo( $hours->open_now ? "Open" : "Closed" ); ?></p>
+        </div>
+        <div class='wp-location-hours-table'>
+			<?php
+			foreach ( $condensed_text as $value ) {
+				?>
+                <div class="wp-location-hours-table-row">
+                    <span class="wp-location-hours-table-column"><?php echo $value; ?></span>
+                </div>
+				<?php
+			}
+			?>
+        </div>
+    </div>
+	<?php
 }
 
 function wp_location_hours_display_today( $hours ) {
