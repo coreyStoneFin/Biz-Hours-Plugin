@@ -27,10 +27,10 @@ class wp_location_settings
 	{
 		// This page will be under "Settings"
 		add_options_page(
-			'Settings Admin',
-			'My Settings',
+			'Wordpress Locations Settings',
+			'wp-Location Settings',
 			'manage_options',
-			'my-setting-admin',
+			'wp-location-setting',
 			array( $this, 'create_admin_page' )
 		);
 	}
@@ -48,8 +48,8 @@ class wp_location_settings
             <form method="post" action="options.php">
 				<?php
 				// This prints out all hidden setting fields
-				settings_fields( 'my_option_group' );
-				do_settings_sections( 'my-setting-admin' );
+				settings_fields( 'wp_location_options' );
+				do_settings_sections( 'wp-location-setting' );
 				submit_button();
 				?>
             </form>
@@ -63,33 +63,33 @@ class wp_location_settings
 	public function page_init()
 	{
 		register_setting(
-			'my_option_group', // Option group
-			'my_option_name', // Option name
+			'wp_location_options', // Option group
+			'google_maps', // Option name
 			array( $this, 'sanitize' ) // Sanitize
 		);
 
 		add_settings_section(
 			'setting_section_id', // ID
-			'My Custom Settings', // Title
+			'Google Maps Settings', // Title
 			array( $this, 'print_section_info' ), // Callback
-			'my-setting-admin' // Page
+			'wp-location-setting' // Page
 		);
 
 		add_settings_field(
-			'id_number', // ID
-			'ID Number', // Title
-			array( $this, 'id_number_callback' ), // Callback
-			'my-setting-admin', // Page
+			'api_key', // ID
+			'API Key', // Title
+			array( $this, 'api_key_callback' ), // Callback
+			'wp-location-setting', // Page
 			'setting_section_id' // Section
 		);
 
-		add_settings_field(
-			'title',
-			'Title',
-			array( $this, 'title_callback' ),
-			'my-setting-admin',
-			'setting_section_id'
-		);
+//		add_settings_field(
+//			'title',
+//			'Title',
+//			array( $this, 'title_callback' ),
+//			'wp-location-setting',
+//			'setting_section_id'
+//		);
 	}
 
 	/**
@@ -100,11 +100,11 @@ class wp_location_settings
 	public function sanitize( $input )
 	{
 		$new_input = array();
-		if( isset( $input['id_number'] ) )
-			$new_input['id_number'] = absint( $input['id_number'] );
-
-		if( isset( $input['title'] ) )
-			$new_input['title'] = sanitize_text_field( $input['title'] );
+		if( isset( $input['api_key'] ) ) {
+			$new_input['api_key'] = absint( $input['api_key'] );
+		}
+//		if( isset( $input['title'] ) )
+//			$new_input['title'] = sanitize_text_field( $input['title'] );
 
 		return $new_input;
 	}
@@ -120,11 +120,11 @@ class wp_location_settings
 	/**
 	 * Get the settings option array and print one of its values
 	 */
-	public function id_number_callback()
+	public function api_key_callback()
 	{
 		printf(
-			'<input type="text" id="id_number" name="my_option_name[id_number]" value="%s" />',
-			isset( $this->options['id_number'] ) ? esc_attr( $this->options['id_number']) : ''
+			'<input type="text" id="api_key" name="google_maps[api_key]" value="%s" />',
+			isset( $this->options['api_key'] ) ? esc_attr( $this->options['api_key']) : ''
 		);
 	}
 
@@ -134,7 +134,7 @@ class wp_location_settings
 	public function title_callback()
 	{
 		printf(
-			'<input type="text" id="title" name="my_option_name[title]" value="%s" />',
+			'<input type="text" id="title" name="google_maps[title]" value="%s" />',
 			isset( $this->options['title'] ) ? esc_attr( $this->options['title']) : ''
 		);
 	}
