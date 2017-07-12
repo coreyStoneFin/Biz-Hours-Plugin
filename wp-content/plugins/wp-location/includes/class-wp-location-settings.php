@@ -18,6 +18,7 @@ class wp_location_settings
 	{
 		add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
 		add_action( 'admin_init', array( $this, 'page_init' ) );
+		$this->options = get_option('wp_location_options');
 	}
 
 	/**
