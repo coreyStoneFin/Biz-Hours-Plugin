@@ -37,7 +37,7 @@ class wp_location_settings {
 	 */
 	public function create_admin_page() {
 		// Set class property
-		$this->options = get_option( 'wp_location_options' );
+		$this->options = get_option( 'wp_location_google' );
 		?>
         <div class="wrap">
             <h1>My Settings</h1>
