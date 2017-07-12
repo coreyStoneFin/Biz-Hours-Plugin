@@ -12,11 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( "wpLocationTable" ) ) {
-	include_once "includes/Constants.php";
+	require_once "includes/Constants.php";
 }
 
 if ( ! class_exists( "wp_location" ) ) {
-	include_once "includes/class-wp-location.php";
+	 require_once "includes/class-wp-location.php";
+}
+if ( ! class_exists( "google_places_api" ) ) {
+	require_once( "includes/class-google-places-api.php" );
 }
 
 function wp_locations_view() {
@@ -70,7 +73,8 @@ function get_wp_location_by_name( $name ) {
 
 function wp_locations_add() {
 	try {
-		require_once( "pages/wp-location-new.php" );
+	    // dont use once,just incase this method gets called twice
+		require( "pages/wp-location-new.php" );
 	} catch ( Exception $e ) {
 		var_dump( $e );
 	}
@@ -81,7 +85,8 @@ function wp_locations_edit( $location_id ) {
 		if ( ! defined( "wpLocationTable" ) ) {
 			include_once "includes/Constants.php";
 		}
-		require_once( "pages/wp-location-edit.php" );
+
+		require( "pages/wp-location-edit.php" );
 	} catch ( Exception $e ) {
 		var_dump( $e );
 	}
@@ -227,10 +232,6 @@ function wpLocationMenuItem() {
 
 // function to geocode address, it will return NULL if unable to geocode address
 function wp_location_geocode( $address ) {
-	if ( ! class_exists( "google_places_api" ) ) {
-		require_once( "includes/class-google-places-api.php" );
-	}
-
 	return google_places_api::geocode( $address );
 }
 
@@ -239,7 +240,6 @@ function wp_location_map_shortcode( $atts = [] ) {
 		return;
 	}
 	// include the google js script with apiKey
-	require_once( "includes/class-google-places-api.php" );
 	google_places_api::include_js_script();
 
 	// include the styling for this plugin
@@ -296,8 +296,6 @@ function wp_location_hours_shortcode( $atts = [] ) {
 		// should throw exception
 		return;
 	}
-
-	require_once( "includes/class-google-places-api.php" );
 
 	// include the styling for this plugin
 	wp_enqueue_style( "wp-location-css", "css/wp_location.css" );
@@ -398,8 +396,9 @@ function wp_location_hours_display_short( $hours ) {
 		return;
 	}
 
+
 	// group days by consistent hours
-	$condensed_text = condense_weekday_text( $hours );
+	$condensed_text = google_places_api::condense_weekday_text( $hours );
 	?>
     <div class="wp-location-hours-container">
         <div class="wp-location-hours-status">
