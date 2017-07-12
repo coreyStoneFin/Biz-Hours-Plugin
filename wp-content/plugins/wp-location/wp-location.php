@@ -219,6 +219,17 @@ function wpLocationMenuItem() {
 		"wp-location-add",
 		"wp_locations_add"
 	);
+
+//	// Add "Settings" SubMenu
+//	add_submenu_page(
+//		"wp-location",
+//		"Wp-Location Settings",
+//		"Wp-Location Settings",
+//		"manage_options",
+//		"wp-location-settings",
+//		"wp_location_settings"
+//	);
+
 	// add "Edit Location" page, WITHOUT menu Item
 	add_submenu_page(
 		null,
@@ -518,6 +529,7 @@ function wpLocationInstall() {
 // Add Menu Item for Stroe locations
 add_action( 'admin_menu', 'wpLocationMenuItem' );
 add_action( 'admin_post_wp_locations_save', 'wp_locations_save' );
+// add_action( 'admin_post_wp_location_settings_save', 'wp_location_settings_save' );
 
 add_shortcode( 'wp_location_map', 'wp_location_map_shortcode' );
 add_shortcode( 'wp_location_hours', 'wp_location_hours_shortcode' );
