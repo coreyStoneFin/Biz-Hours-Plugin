@@ -501,6 +501,30 @@ function wp_location_map_shortcode( $atts = [] ) {
 
 }
 
+function wp_location_hours_short_shortcode( $atts = [] ) {
+	if ( array_key_exists( "name", $atts ) || array_key_exists( "id", $atts ) ) {
+		$atts["type"] = "short";
+
+		return wp_location_hours_shortcode( $atts );
+	}
+}
+
+function wp_location_hours_long_shortcode( $atts = [] ) {
+	if ( array_key_exists( "name", $atts ) || array_key_exists( "id", $atts ) ) {
+		$atts["type"] = "long";
+
+		return wp_location_hours_shortcode( $atts );
+	}
+}
+
+function wp_location_hours_today_shortcode( $atts = [] ) {
+	if ( array_key_exists( "name", $atts ) || array_key_exists( "id", $atts ) ) {
+		$atts["type"] = "today";
+
+		return wp_location_hours_shortcode( $atts );
+	}
+}
+
 function wp_location_hours_shortcode( $atts = [] ) {
 	if ( ! empty( $atts ) ) {
 		require_once( "includes/class-google-places-api.php" );
@@ -521,10 +545,20 @@ function wp_location_hours_shortcode( $atts = [] ) {
 		}
 
 		$defaultedatts = shortcode_atts( array(
-			'format' => 'long',
+			'type' => 'long',
 		), $atts );
 
 		$hours = google_places_api::get_place_hours( $location->place_id );
+		if ( empty( $hours ) ) {
+			?>
+            <div class="wp-location-hours-container">
+                <div class="wp-location-hours-status">
+                    <p>Failed to Load Open Hours for Location</p>
+                </div>
+            </div>
+			<?php
+		}
+
 		switch ( $defaultedatts['format'] ) {
 			case 'long':
 				wp_location_hours_display_long( $hours );
@@ -539,8 +573,10 @@ function wp_location_hours_shortcode( $atts = [] ) {
 	}
 }
 
-
 function wp_location_hours_display_long( $hours ) {
+	if ( empty( $hours ) ) {
+		return;
+	}
 	?>
     <div class="wp-location-hours-container">
         <div class="wp-location-hours-status">
@@ -562,6 +598,8 @@ function wp_location_hours_display_long( $hours ) {
 }
 
 function wp_location_hours_display_short( $hours ) {
+    var_dump($hours);
+
 }
 
 function wp_location_hours_display_today( $hours ) {
@@ -677,6 +715,9 @@ add_action( 'admin_post_wp_locations_save', 'wp_locations_save' );
 
 add_shortcode( 'wp_location_map', 'wp_location_map_shortcode' );
 add_shortcode( 'wp_location_hours', 'google_place_shortcode' );
+add_shortcode( 'wp_location_hours_long', 'google_place_shortcode' );
+add_shortcode( 'wp_location_hours_short', 'google_place_shortcode' );
+add_shortcode( 'wp_location_hours_status', 'google_place_shortcode' );
 //add_shortcode( 'googleplace_pickup', 'google_place_pickup_time_shortcode' );
 //add_shortcode( 'googleplace_delivery', 'google_place_delivery_time_shortcode' );
 //add_shortcode( 'googleplace_business_status', 'google_place_business_status_shortcode' );
