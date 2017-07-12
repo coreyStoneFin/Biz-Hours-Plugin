@@ -78,13 +78,24 @@ class wp_location_settings {
 			'setting_section_id' // Section
 		);
 
-//		add_settings_field(
-//			'title',
-//			'Title',
-//			array( $this, 'title_callback' ),
-//			'wp-location-setting',
-//			'setting_section_id'
-//		);
+//		public static $place_endpoint = "https://maps.googleapis.com/maps/api/place/details/json?";
+//		public static $map_endpoint = "https://maps.googleapis.com/maps/api/place/details/json?";
+//		protected static $version = "3.exp";
+		add_settings_field(
+			'endpoint_url',
+			'Google Endpoint',
+			array( $this, 'endpoint_callback' ),
+			'wp-location-setting',
+			'setting_section_id'
+		);
+
+		add_settings_field(
+			'version',
+			'Maps Version',
+			array( $this, 'version_callback' ),
+			'wp-location-setting',
+			'setting_section_id'
+		);
 	}
 
 	/**
@@ -96,6 +107,12 @@ class wp_location_settings {
 		$new_input = array();
 		if ( isset( $input['api_key'] ) ) {
 			$new_input['api_key'] = preg_replace( "/[^0-9a-z\-_]/i", "", $input['api_key'] );
+		}
+		if ( isset( $input['endpoint_url'] ) ) {
+			$new_input['endpoint_url'] =filter_var ( $input['endpoint_url'], FILTER_SANITIZE_URL);
+		}
+		if ( isset( $input['version'] ) ) {
+			$new_input['version'] =filter_var ( $input['version'], FILTER_SANITIZE_STRING);
 		}
 //		if( isset( $input['title'] ) )
 //			$new_input['title'] = sanitize_text_field( $input['title'] );
@@ -123,10 +140,17 @@ class wp_location_settings {
 	/**
 	 * Get the settings option array and print one of its values
 	 */
-	public function title_callback() {
+	public function endpoint_callback() {
 		printf(
-			'<input type="text" id="title" name="wp_location_google[title]" value="%s" />',
-			isset( $this->options['title'] ) ? esc_attr( $this->options['title'] ) : ''
+			'<input type="text" id="endpoint_url" name="wp_location_google[endpoint_url]" value="%s" />',
+			isset( $this->options['endpoint_url'] ) ? esc_attr( $this->options['endpoint_url'] ) : ''
+		);
+	}
+
+	public function version_callback() {
+		printf(
+			'<input type="text" id="version" name="wp_location_google[version]" value="%s" />',
+			isset( $this->options['version'] ) ? esc_attr( $this->options['version'] ) : ''
 		);
 	}
 }
