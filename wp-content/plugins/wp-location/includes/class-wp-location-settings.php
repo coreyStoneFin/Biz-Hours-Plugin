@@ -95,7 +95,7 @@ class wp_location_settings {
 	public function sanitize( $input ) {
 		$new_input = array();
 		if ( isset( $input['api_key'] ) ) {
-			$new_input['api_key'] = preg_replace( "/[0-9a-z\-_]/i", "", $input['api_key'] );
+			$new_input['api_key'] = preg_replace( "/[^0-9a-z\-_]/i", "", $input['api_key'] );
 		}
 //		if( isset( $input['title'] ) )
 //			$new_input['title'] = sanitize_text_field( $input['title'] );
