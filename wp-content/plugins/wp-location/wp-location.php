@@ -16,7 +16,7 @@ if ( ! defined( "wpLocationTable" ) ) {
 }
 
 if ( ! class_exists( "wp_location" ) ) {
-	 require_once "includes/class-wp-location.php";
+	require_once "includes/class-wp-location.php";
 }
 if ( ! class_exists( "google_places_api" ) ) {
 	require_once( "includes/class-google-places-api.php" );
@@ -73,7 +73,7 @@ function get_wp_location_by_name( $name ) {
 
 function wp_locations_add() {
 	try {
-	    // dont use once,just incase this method gets called twice
+		// dont use once,just incase this method gets called twice
 		require( "pages/wp-location-new.php" );
 	} catch ( Exception $e ) {
 		var_dump( $e );
@@ -243,7 +243,7 @@ function wp_location_map_shortcode( $atts = [] ) {
 	google_places_api::include_js_script();
 
 	// include the styling for this plugin
-	wp_enqueue_style( "wp-location-css", plugins_url("wp-location/css/wp_location.css") );
+	wp_enqueue_style( "wp-location-css", plugins_url( "wp-location/css/wp_location.css" ) );
 
 	$location = null;
 	if ( array_key_exists( "name", $atts ) ) {
@@ -298,7 +298,7 @@ function wp_location_hours_shortcode( $atts = [] ) {
 	}
 
 	// include the styling for this plugin
-	wp_enqueue_style( "wp-location-css", plugins_url("wp-location/css/wp_location.css") );
+	wp_enqueue_style( "wp-location-css", plugins_url( "wp-location/css/wp_location.css" ) );
 
 	$location = null;
 	if ( array_key_exists( "name", $atts ) ) {
@@ -322,48 +322,55 @@ function wp_location_hours_shortcode( $atts = [] ) {
 
 	$hours = google_places_api::get_place_hours( $location->place_id );
 	if ( empty( $hours ) ) {
-		?>
-        <div class="wp-location-hours-container">
-            <div class="wp-location-hours-status">
-                <p>Failed to Load Open Hours for Location</p>
+	    ob_start();
+	    try {
+		    ?>
+            <div class="wp-location-hours-container">
+                <div class="wp-location-hours-status">
+                    <p>Failed to Load Open Hours for Location</p>
+                </div>
             </div>
-        </div>
-		<?php
-		return;
+		    <?php
+		    return ob_get_contents();
+	    }finally{
+	        ob_end_clean();
+        }
 	}
 
+	$html = "";
 	switch ( $defaultedatts['type'] ) {
 		case 'long':
-			wp_location_hours_display_long( $hours );
+			$html = wp_location_hours_display_long( $hours );
 			break;
 		case 'short':
-			wp_location_hours_display_short( $hours );
+			$html = wp_location_hours_display_short( $hours );
 			break;
 		case 'status':
-			wp_location_hours_display_today( $hours );
+			$html = wp_location_hours_display_today( $hours );
 			break;
 	}
 
+	return $html;
 }
 
 function wp_location_hours_short_shortcode( $atts = [] ) {
 	if ( array_key_exists( "name", $atts ) || array_key_exists( "id", $atts ) ) {
 		$atts["type"] = "short";
-		wp_location_hours_shortcode( $atts );
+		return wp_location_hours_shortcode( $atts );
 	}
 }
 
 function wp_location_hours_long_shortcode( $atts = [] ) {
 	if ( array_key_exists( "name", $atts ) || array_key_exists( "id", $atts ) ) {
 		$atts["type"] = "long";
-		wp_location_hours_shortcode( $atts );
+		return wp_location_hours_shortcode( $atts );
 	}
 }
 
 function wp_location_hours_today_shortcode( $atts = [] ) {
 	if ( array_key_exists( "name", $atts ) || array_key_exists( "id", $atts ) ) {
 		$atts["type"] = "today";
-		wp_location_hours_shortcode( $atts );
+		return wp_location_hours_shortcode( $atts );
 	}
 }
 
@@ -371,24 +378,32 @@ function wp_location_hours_display_long( $hours ) {
 	if ( empty( $hours ) ) {
 		return;
 	}
-	?>
-    <div class="wp-location-hours-container">
-        <div class="wp-location-hours-status">
-            <p>Doors are: <?php echo( $hours->open_now ? "Open" : "Closed" ); ?></p>
-        </div>
-        <div class='wp-location-hours-table'>
-			<?php
-			foreach ( $hours->weekday_text as $key => $value ) {
-				?>
-                <div class="wp-location-hours-table-row">
-                    <span class="wp-location-hours-table-column"><?php echo $value; ?></span>
-                </div>
+
+	ob_start();
+	try {
+		?>
+        <div class="wp-location-hours-container">
+            <div class="wp-location-hours-status">
+                <p>Doors are: <?php echo( $hours->open_now ? "Open" : "Closed" ); ?></p>
+            </div>
+            <div class='wp-location-hours-table'>
 				<?php
-			}
-			?>
+				foreach ( $hours->weekday_text as $key => $value ) {
+					?>
+                    <div class="wp-location-hours-table-row">
+                        <span class="wp-location-hours-table-column"><?php echo $value; ?></span>
+                    </div>
+					<?php
+				}
+				?>
+            </div>
         </div>
-    </div>
-	<?php
+		<?php
+		return ob_get_contents();
+	} finally {
+		// no matter what, make sure to kill the output buffering that we started
+		ob_end_clean();
+	}
 }
 
 function wp_location_hours_display_short( $hours ) {
@@ -396,27 +411,32 @@ function wp_location_hours_display_short( $hours ) {
 		return;
 	}
 
-
 	// group days by consistent hours
 	$condensed_text = google_places_api::condense_weekday_text( $hours );
-	?>
-    <div class="wp-location-hours-container">
-        <div class="wp-location-hours-status">
-            <p>Doors are: <?php echo( $hours->open_now ? "Open" : "Closed" ); ?></p>
-        </div>
-        <div class='wp-location-hours-table'>
-			<?php
-			foreach ( $condensed_text as $value ) {
-				?>
-                <div class="wp-location-hours-table-row">
-                    <span class="wp-location-hours-table-column"><?php echo $value; ?></span>
-                </div>
+	ob_start();
+	try {
+		?>
+        <div class="wp-location-hours-container">
+            <div class="wp-location-hours-status">
+                <p>Doors are: <?php echo( $hours->open_now ? "Open" : "Closed" ); ?></p>
+            </div>
+            <div class='wp-location-hours-table'>
 				<?php
-			}
-			?>
+				foreach ( $condensed_text as $value ) {
+					?>
+                    <div class="wp-location-hours-table-row">
+                        <span class="wp-location-hours-table-column"><?php echo $value; ?></span>
+                    </div>
+					<?php
+				}
+				?>
+            </div>
         </div>
-    </div>
-	<?php
+		<?php
+		return ob_get_contents();
+	} finally {
+		ob_end_clean();
+	}
 }
 
 function wp_location_hours_display_today( $hours ) {
@@ -425,18 +445,24 @@ function wp_location_hours_display_today( $hours ) {
 	}
 	// because googlePlaces API doesn't understand how to make things the same...
 	$day_conversion_table = array( 0 => 5, 1 => 0, 2 => 1, 3 => 2, 4 => 3, 5 => 4, 6 => 6 );
-	?>
-    <div class="wp-location-hours-container">
-        <div class="wp-location-hours-status">
-            <p>Doors are: <?php echo( $hours->open_now ? "Open" : "Closed" ); ?></p>
-        </div>
-        <div class='wp-location-hours-table'>
-            <div class="wp-location-hours-table-row">
-                <span class="wp-location-hours-table-column"><?php echo $hours->weekday_text[ $day_conversion_table[ date( 'w' ) ] ] ?></span>
+	ob_start();
+	try {
+		?>
+        <div class="wp-location-hours-container">
+            <div class="wp-location-hours-status">
+                <p>Doors are: <?php echo( $hours->open_now ? "Open" : "Closed" ); ?></p>
+            </div>
+            <div class='wp-location-hours-table'>
+                <div class="wp-location-hours-table-row">
+                    <span class="wp-location-hours-table-column"><?php echo $hours->weekday_text[ $day_conversion_table[ date( 'w' ) ] ] ?></span>
+                </div>
             </div>
         </div>
-    </div>
-	<?php
+		<?php
+		return ob_get_contents();
+	} finally {
+		ob_end_clean();
+	}
 }
 
 function wpLocationInstall() {
