@@ -93,7 +93,6 @@ class wp_location_settings {
 	 * @param array $input Contains all settings fields as array keys
 	 */
 	public function sanitize( $input ) {
-		return $input;
 		$new_input = array();
 		if ( isset( $input['api_key'] ) ) {
 			$new_input['api_key'] = preg_replace( "/[0-9a-z\-_]/i", "", $input['api_key'] );
