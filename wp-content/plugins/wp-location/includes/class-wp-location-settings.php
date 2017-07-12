@@ -143,14 +143,14 @@ class wp_location_settings {
 	public function endpoint_callback() {
 		printf(
 			'<input type="text" id="endpoint_url" name="wp_location_google[endpoint_url]" value="%s" />',
-			isset( $this->options['endpoint_url'] ) ? esc_attr( $this->options['endpoint_url'] ) : ''
+			isset( $this->options['endpoint_url'] ) ? esc_attr( $this->options['endpoint_url'] ) : "https://maps.googleapis.com/maps/api/place/details/json?"
 		);
 	}
 
 	public function version_callback() {
 		printf(
 			'<input type="text" id="version" name="wp_location_google[version]" value="%s" />',
-			isset( $this->options['version'] ) ? esc_attr( $this->options['version'] ) : ''
+			isset( $this->options['version'] ) ? esc_attr( $this->options['version'] ) : '3.exp'
 		);
 	}
 }
