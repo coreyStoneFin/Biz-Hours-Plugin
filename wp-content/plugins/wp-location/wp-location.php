@@ -18,8 +18,13 @@ if ( ! defined( "wpLocationTable" ) ) {
 if ( ! class_exists( "wp_location" ) ) {
 	require_once "includes/class-wp-location.php";
 }
+
 if ( ! class_exists( "google_places_api" ) ) {
 	require_once( "includes/class-google-places-api.php" );
+}
+
+if ( ! class_exists( "wp_location_settings" ) ) {
+	require_once( "includes/class-wp-location-settings.php" );
 }
 
 function wp_locations_view() {
@@ -193,6 +198,7 @@ function wp_location_settings(){
     if(is_admin()){
         require_once "includes/class-wp-location-settings.php";
         $settings = new wp_location_settings();
+        $settings->create_admin_page();
     }
 }
 function wp_locations_save_success() {
@@ -535,6 +541,7 @@ function wpLocationInstall() {
 // Add Menu Item for Stroe locations
 add_action( 'admin_menu', 'wpLocationMenuItem' );
 add_action( 'admin_post_wp_locations_save', 'wp_locations_save' );
+
 // add_action( 'admin_post_wp_location_settings_save', 'wp_location_settings_save' );
 
 add_shortcode( 'wp_location_map', 'wp_location_map_shortcode' );
