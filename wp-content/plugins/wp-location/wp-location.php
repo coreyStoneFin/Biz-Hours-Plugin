@@ -714,10 +714,10 @@ add_action( 'admin_menu', 'wpLocationMenuItem' );
 add_action( 'admin_post_wp_locations_save', 'wp_locations_save' );
 
 add_shortcode( 'wp_location_map', 'wp_location_map_shortcode' );
-add_shortcode( 'wp_location_hours', 'google_place_shortcode' );
-add_shortcode( 'wp_location_hours_long', 'google_place_shortcode' );
-add_shortcode( 'wp_location_hours_short', 'google_place_shortcode' );
-add_shortcode( 'wp_location_hours_status', 'google_place_shortcode' );
+add_shortcode( 'wp_location_hours', 'wp_location_hours_shortcode' );
+add_shortcode( 'wp_location_hours_long', 'wp_location_hours_long_shortcode' );
+add_shortcode( 'wp_location_hours_short', 'wp_location_hours_short_shortcode' );
+add_shortcode( 'wp_location_hours_today', 'wp_location_hours_today_shortcode' );
 //add_shortcode( 'googleplace_pickup', 'google_place_pickup_time_shortcode' );
 //add_shortcode( 'googleplace_delivery', 'google_place_delivery_time_shortcode' );
 //add_shortcode( 'googleplace_business_status', 'google_place_business_status_shortcode' );
