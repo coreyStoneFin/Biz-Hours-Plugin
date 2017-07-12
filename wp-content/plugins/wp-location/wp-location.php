@@ -557,6 +557,7 @@ function wp_location_hours_shortcode( $atts = [] ) {
                 </div>
             </div>
 			<?php
+            return;
 		}
 
 		switch ( $defaultedatts['format'] ) {
@@ -598,11 +599,17 @@ function wp_location_hours_display_long( $hours ) {
 }
 
 function wp_location_hours_display_short( $hours ) {
-    var_dump($hours);
+	if ( empty( $hours ) ) {
+		return;
+	}
+	print_r($hours);
 
 }
 
 function wp_location_hours_display_today( $hours ) {
+	if ( empty( $hours ) ) {
+		return;
+	}
 	// because googlePlaces API doesn't understand how to make things the same...
 	$day_conversion_table = array( 0 => 5, 1 => 0, 2 => 1, 3 => 2, 4 => 3, 5 => 4, 6 => 6 );
 	?>

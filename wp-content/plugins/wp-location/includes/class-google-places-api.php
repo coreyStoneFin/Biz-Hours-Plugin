@@ -15,7 +15,7 @@ class google_places_api {
 
 
 	public static function include_js_script() {
-		wp_enqueue_script( 'google-maps-api', "https://maps.googleapis.com/maps/api/js?key=" . google_places_api::apiKey . "&v=" . google_places_api::version );
+		wp_enqueue_script( 'google-maps-api', "https://maps.googleapis.com/maps/api/js?key=" . self::apiKey . "&v=" . self::version );
 	}
 
 	public static function geocode( $address ) {
@@ -60,7 +60,7 @@ class google_places_api {
 	public static function get_place_hours( $place_id ) {
 		$current_time = new DateTime( "now" );
 		$current_time->setTimezone( new DateTimeZone( 'America/Chicago' ) );
-		$json = wp_remote_get( google_places_api::place_endpoint . 'placeid=' . $place_id . '&key=' . google_places_api::apiKey );
+		$json = wp_remote_get( self::place_endpoint . 'placeid=' . $place_id . '&key=' . self::apiKey );
 
 		try {
 			$place_object = json_decode( $json['body'] );
