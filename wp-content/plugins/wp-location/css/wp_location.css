@@ -1,0 +1,20 @@
+.wp-location-map{
+    min-height: 500px;
+    min-width: 500px;
+}
+
+.wp-location-hours-container{
+    display: inline-block;
+}
+.wp-location-hours-status{
+    display: inline-block;
+}
+.wp-location-hours-table{
+    display: inline-block;
+}
+.wp-location-hours-table-row{
+    border-bottom: 1px solid #CCCCCC;
+}
+.wp-location-hours-table-column{
+   font-style: italic;
+}
