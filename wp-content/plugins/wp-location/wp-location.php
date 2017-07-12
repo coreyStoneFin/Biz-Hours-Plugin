@@ -334,7 +334,7 @@ function wp_location_hours_shortcode( $atts = [] ) {
 		return;
 	}
 
-	switch ( $defaultedatts['format'] ) {
+	switch ( $defaultedatts['type'] ) {
 		case 'long':
 			wp_location_hours_display_long( $hours );
 			break;

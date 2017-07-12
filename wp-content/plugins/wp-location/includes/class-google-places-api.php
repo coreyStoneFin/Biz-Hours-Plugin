@@ -64,7 +64,7 @@ class google_places_api {
 
 		try {
 			$place_object = json_decode( $json['body'] );
-			print_r( $place_object );
+			// print_r( $place_object );
 
 			return $place_object->result->opening_hours;
 		} catch ( Exception $e ) {
