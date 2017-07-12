@@ -64,7 +64,7 @@ class wp_location_settings
 	{
 		register_setting(
 			'wp_location_options', // Option group
-			'google_maps', // Option name
+			'wp_location_google', // Option name
 			array( $this, 'sanitize' ) // Sanitize
 		);
 
@@ -99,6 +99,7 @@ class wp_location_settings
 	 */
 	public function sanitize( $input )
 	{
+	    return $input;
 		$new_input = array();
 		if( isset( $input['api_key'] ) ) {
 			$new_input['api_key'] = preg_replace( "/[0-9a-z\-_]/i","",$input['api_key'] );
@@ -123,7 +124,7 @@ class wp_location_settings
 	public function api_key_callback()
 	{
 		printf(
-			'<input type="text" id="api_key" name="google_maps[api_key]" value="%s" />',
+			'<input type="text" id="api_key" name="wp_location_google[api_key]" value="%s" />',
 			isset( $this->options['api_key'] ) ? esc_attr( $this->options['api_key']) : ''
 		);
 	}
@@ -134,7 +135,7 @@ class wp_location_settings
 	public function title_callback()
 	{
 		printf(
-			'<input type="text" id="title" name="google_maps[title]" value="%s" />',
+			'<input type="text" id="title" name="wp_location_google[title]" value="%s" />',
 			isset( $this->options['title'] ) ? esc_attr( $this->options['title']) : ''
 		);
 	}
