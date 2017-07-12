@@ -322,14 +322,14 @@ function wp_location_hours_shortcode( $atts = [] ) {
 		return;
 	}
 
-	$defaultedatts = shortcode_atts( array(
+	$defaulted_atts = shortcode_atts( array(
 		"type"  => "long",
 		"style" => "",
 		"class" => ""
 	), $atts );
 
-	$style = $atts["style"];
-	$class = $atts["class"];
+	$style = $defaulted_atts["style"];
+	$class = $defaulted_atts["class"];
 
 
 	$hours = google_places_api::get_place_hours( $location->place_id );
@@ -350,7 +350,7 @@ function wp_location_hours_shortcode( $atts = [] ) {
 	}
 
 	$html = "";
-	switch ( $defaultedatts['type'] ) {
+	switch ( $defaulted_atts['type'] ) {
 		case 'long':
 			$html = wp_location_hours_display_long( $hours, $class, $style );
 			break;
