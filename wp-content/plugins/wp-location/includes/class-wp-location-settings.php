@@ -28,7 +28,7 @@ class wp_location_settings
 		// This page will be under "Settings"
 		add_options_page(
 			'Wordpress Locations Settings',
-			'wp-Location Settings',
+			'Wp-Location Settings',
 			'manage_options',
 			'wp-location-setting',
 			array( $this, 'create_admin_page' )
@@ -101,7 +101,7 @@ class wp_location_settings
 	{
 		$new_input = array();
 		if( isset( $input['api_key'] ) ) {
-			$new_input['api_key'] = absint( $input['api_key'] );
+			$new_input['api_key'] = preg_replace( "/[0-9a-z\-_]/i","",$input['api_key'] );
 		}
 //		if( isset( $input['title'] ) )
 //			$new_input['title'] = sanitize_text_field( $input['title'] );
