@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( "wpLocationTable" ) ) {
-	require_once "includes/Constants.php";
+	require_once "includes/constants.php";
 }
 
 if ( ! class_exists( "wp_location" ) ) {
@@ -83,7 +83,7 @@ function wp_locations_add() {
 function wp_locations_edit( $location_id ) {
 	try {
 		if ( ! defined( "wpLocationTable" ) ) {
-			include_once "includes/Constants.php";
+			include_once "includes/constants.php";
 		}
 
 		require( "pages/wp-location-edit.php" );

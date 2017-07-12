@@ -14,7 +14,7 @@ if ( ! class_exists( 'wp_location' ) ) {
 }
 
 if ( ! defined( "wpLocationTable" ) ) {
-	include_once "Constants.php";
+	include_once "constants.php";
 }
 
 class wp_locations_list_table extends WP_List_Table {
