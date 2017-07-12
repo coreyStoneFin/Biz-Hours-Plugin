@@ -232,15 +232,15 @@ function wpLocationMenuItem() {
 		"wp_locations_add"
 	);
 
-	// Add "Settings" SubMenu
-	add_submenu_page(
-		"wp-location",
-		"Wp-Location Settings",
-		"Wp-Location Settings",
-		"manage_options",
-		"wp-location-settings",
-		"wp_location_settings"
-	);
+//	// Add "Settings" SubMenu
+//	add_submenu_page(
+//		"wp-location",
+//		"Wp-Location Settings",
+//		"Settings",
+//		"manage_options",
+//		"wp-location-settings",
+//		"wp_location_settings"
+//	);
 
 	// add "Edit Location" page, WITHOUT menu Item
 	add_submenu_page(

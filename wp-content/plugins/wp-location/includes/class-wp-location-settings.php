@@ -27,10 +27,10 @@ class wp_location_settings
 	{
 		// This page will be under "Settings"
 		add_options_page(
-			'Wp-Locations Settings',
-			'Wp-Locations Settings',
+			'Settings Admin',
+			'My Settings',
 			'manage_options',
-			'wp-location-settings',
+			'my-setting-admin',
 			array( $this, 'create_admin_page' )
 		);
 	}
@@ -41,19 +41,19 @@ class wp_location_settings
 	public function create_admin_page()
 	{
 		// Set class property
-		$this->options = get_option( 'google_api_key' );
+		$this->options = get_option( 'my_option_name' );
 		?>
-		<div class="wrap">
-			<h1>My Settings</h1>
-			<form method="post" action="options.php">
+        <div class="wrap">
+            <h1>My Settings</h1>
+            <form method="post" action="options.php">
 				<?php
 				// This prints out all hidden setting fields
-				settings_fields( 'wp_location_options' );
+				settings_fields( 'my_option_group' );
 				do_settings_sections( 'my-setting-admin' );
 				submit_button();
 				?>
-			</form>
-		</div>
+            </form>
+        </div>
 		<?php
 	}
 
@@ -63,14 +63,14 @@ class wp_location_settings
 	public function page_init()
 	{
 		register_setting(
-			'wp_location_options', // Option group
-			'google_api_key', // Option name
+			'my_option_group', // Option group
+			'my_option_name', // Option name
 			array( $this, 'sanitize' ) // Sanitize
 		);
 
 		add_settings_section(
 			'setting_section_id', // ID
-			'wp-Location Settings', // Title
+			'My Custom Settings', // Title
 			array( $this, 'print_section_info' ), // Callback
 			'my-setting-admin' // Page
 		);
@@ -139,3 +139,6 @@ class wp_location_settings
 		);
 	}
 }
+
+if( is_admin() )
+	$my_settings_page = new wp_location_settings();
