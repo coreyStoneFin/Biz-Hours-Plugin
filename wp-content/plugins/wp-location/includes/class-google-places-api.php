@@ -73,7 +73,7 @@ class google_places_api {
 	public static function get_place_hours( $place_id ) {
 		$current_time = new DateTime( "now" );
 		$current_time->setTimezone( new DateTimeZone( 'America/Chicago' ) );
-		$json = wp_remote_get( self::get_endpoint() . 'placeid=' . $place_id . '&key=' . self::get_apiKey );
+		$json = wp_remote_get( self::get_endpoint() . 'placeid=' . $place_id . '&key=' . self::get_apiKey() );
 
 		try {
 			$place_object = json_decode( $json['body'] );
