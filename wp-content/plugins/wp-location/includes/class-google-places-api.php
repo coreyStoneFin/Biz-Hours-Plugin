@@ -7,15 +7,28 @@
  * Time: 12:13 PM
  */
 class google_places_api {
-	// private static $apiKey = "AIzaSyDuHcLe6WbcD1qVmBfZ6OXT85XOT3oiscs";
-	private static $apiKey = "AIzaSyCckc-IRS8AKZK-Hq_qwiq1O02nqLce0-c";
-	public static $place_endpoint = "https://maps.googleapis.com/maps/api/place/details/json?";
-	public static $map_endpoint = "https://maps.googleapis.com/maps/api/place/details/json?";
-	protected static $version = "3.exp";
+	private static function get_apiKey() {
+		$options = get_option( 'wp_location_google' );
+		return $options['api_key'];
+	}
 
+	private static function get_endpoint() {
+		$options  = get_option( 'wp_location_google' );
+		$endpoint = $options['endpoint_url'];
+		if ( substr( $endpoint, - 1 ) != "?" ) {
+			$endpoint .= "?";
+		}
+
+		return $endpoint;
+	}
+
+	public static function get_version() {
+		$options = get_option( 'wp_location_google' );
+		return $options['version'];
+	}
 
 	public static function include_js_script() {
-		wp_enqueue_script( 'google-maps-api', "https://maps.googleapis.com/maps/api/js?key=" . self::$apiKey . "&v=" . self::$version );
+		wp_enqueue_script( 'google-maps-api', "https://maps.googleapis.com/maps/api/js?key=" . self::get_apiKey() . "&v=" . self::get_version() );
 	}
 
 	public static function geocode( $address ) {
@@ -60,10 +73,11 @@ class google_places_api {
 	public static function get_place_hours( $place_id ) {
 		$current_time = new DateTime( "now" );
 		$current_time->setTimezone( new DateTimeZone( 'America/Chicago' ) );
-		$json = wp_remote_get( self::$place_endpoint . 'placeid=' . $place_id . '&key=' . self::$apiKey );
+		$json = wp_remote_get( self::get_endpoint() . 'placeid=' . $place_id . '&key=' . self::get_apiKey );
 
 		try {
 			$place_object = json_decode( $json['body'] );
+
 			// print_r( $place_object );
 
 			return $place_object->result->opening_hours;
