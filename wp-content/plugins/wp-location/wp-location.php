@@ -243,7 +243,7 @@ function wp_location_map_shortcode( $atts = [] ) {
 	google_places_api::include_js_script();
 
 	// include the styling for this plugin
-	wp_enqueue_style( "wp-location-css", "css/wp_location.css" );
+	wp_enqueue_style( "wp-location-css", plugins_url("wp-location/css/wp_location.css") );
 
 	$location = null;
 	if ( array_key_exists( "name", $atts ) ) {
@@ -298,7 +298,7 @@ function wp_location_hours_shortcode( $atts = [] ) {
 	}
 
 	// include the styling for this plugin
-	wp_enqueue_style( "wp-location-css", "css/wp_location.css" );
+	wp_enqueue_style( "wp-location-css", plugins_url("wp-location/css/wp_location.css") );
 
 	$location = null;
 	if ( array_key_exists( "name", $atts ) ) {
