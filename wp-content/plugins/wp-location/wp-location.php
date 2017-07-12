@@ -357,7 +357,7 @@ function wp_location_hours_shortcode( $atts = [] ) {
 		case 'short':
 			$html = wp_location_hours_display_short( $hours, $class, $style );
 			break;
-		case 'status':
+		case 'today':
 			$html = wp_location_hours_display_today( $hours, $class, $style );
 			break;
 	}
