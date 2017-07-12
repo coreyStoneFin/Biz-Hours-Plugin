@@ -189,6 +189,12 @@ function wp_location_format_address( $location ) {
 	return $formatted;
 }
 
+function wp_location_settings(){
+    if(is_admin()){
+        require_once "includes/class-wp-location-settings.php";
+        $settings = new wp_location_settings();
+    }
+}
 function wp_locations_save_success() {
 	?>
     <div class="notice notice-success is-dismissible">
@@ -220,15 +226,15 @@ function wpLocationMenuItem() {
 		"wp_locations_add"
 	);
 
-//	// Add "Settings" SubMenu
-//	add_submenu_page(
-//		"wp-location",
-//		"Wp-Location Settings",
-//		"Wp-Location Settings",
-//		"manage_options",
-//		"wp-location-settings",
-//		"wp_location_settings"
-//	);
+	// Add "Settings" SubMenu
+	add_submenu_page(
+		"wp-location",
+		"Wp-Location Settings",
+		"Wp-Location Settings",
+		"manage_options",
+		"wp-location-settings",
+		"wp_location_settings"
+	);
 
 	// add "Edit Location" page, WITHOUT menu Item
 	add_submenu_page(
