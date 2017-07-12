@@ -263,32 +263,38 @@ function wp_location_map_shortcode( $atts = [] ) {
 
 	$style = array_key_exists( "style", $atts ) ? $atts["style"] . ";" : "";
 	$class = array_key_exists( "class", $atts ) ? $atts["class"] . ";" : "";
-	?>
-    <h3><?php echo $location->name; ?></h3>
-    <span><?php echo wp_location_format_address( $location ); ?></span>
-    <div id="wp-location-map-<?php echo $location->id; ?>" class="wp-location-map <?php echo $class; ?>"
-         style="<?php echo $style; ?>"></div>
-    <script>
-        jQuery(document).ready(function () {
-            var loc = new google.maps.LatLng(<?php echo $location->latitude; ?>, <?php echo $location->longitude; ?>);
-            var map = new google.maps.Map(document.getElementById('wp-location-map-<?php echo $location->id; ?>'), {
-                zoom: 10,
-                center: loc
-            });
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                    map.setCenter(initialLocation);
+	ob_start();
+	try {
+		?>
+        <h3><?php echo $location->name; ?></h3>
+        <span><?php echo wp_location_format_address( $location ); ?></span>
+        <div id="wp-location-map-<?php echo $location->id; ?>" class="wp-location-map <?php echo $class; ?>"
+             style="<?php echo $style; ?>"></div>
+        <script>
+            jQuery(document).ready(function () {
+                var loc = new google.maps.LatLng(<?php echo $location->latitude; ?>, <?php echo $location->longitude; ?>);
+                var map = new google.maps.Map(document.getElementById('wp-location-map-<?php echo $location->id; ?>'), {
+                    zoom: 10,
+                    center: loc
                 });
-            }
-            var marker = new google.maps.Marker({
-                position: loc,
-                map: map
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                        map.setCenter(initialLocation);
+                    });
+                }
+                var marker = new google.maps.Marker({
+                    position: loc,
+                    map: map
+                });
             });
-        });
-    </script>
-	<?php
-
+        </script>
+		<?php
+		return ob_get_contents();
+	} finally {
+		// Make sure to end the output buffer that we started, reguardless of success or failure
+		ob_end_clean();
+	}
 }
 
 function wp_location_hours_shortcode( $atts = [] ) {
@@ -317,36 +323,42 @@ function wp_location_hours_shortcode( $atts = [] ) {
 	}
 
 	$defaultedatts = shortcode_atts( array(
-		"type" => "long",
+		"type"  => "long",
+		"style" => "",
+		"class" => ""
 	), $atts );
+
+	$style = $atts["style"];
+	$class = $atts["class"];
+
 
 	$hours = google_places_api::get_place_hours( $location->place_id );
 	if ( empty( $hours ) ) {
-	    ob_start();
-	    try {
-		    ?>
+		ob_start();
+		try {
+			?>
             <div class="wp-location-hours-container">
                 <div class="wp-location-hours-status">
                     <p>Failed to Load Open Hours for Location</p>
                 </div>
             </div>
-		    <?php
-		    return ob_get_contents();
-	    }finally{
-	        ob_end_clean();
-        }
+			<?php
+			return ob_get_contents();
+		} finally {
+			ob_end_clean();
+		}
 	}
 
 	$html = "";
 	switch ( $defaultedatts['type'] ) {
 		case 'long':
-			$html = wp_location_hours_display_long( $hours );
+			$html = wp_location_hours_display_long( $hours, $class, $style );
 			break;
 		case 'short':
-			$html = wp_location_hours_display_short( $hours );
+			$html = wp_location_hours_display_short( $hours, $class, $style );
 			break;
 		case 'status':
-			$html = wp_location_hours_display_today( $hours );
+			$html = wp_location_hours_display_today( $hours, $class, $style );
 			break;
 	}
 
@@ -356,6 +368,7 @@ function wp_location_hours_shortcode( $atts = [] ) {
 function wp_location_hours_short_shortcode( $atts = [] ) {
 	if ( array_key_exists( "name", $atts ) || array_key_exists( "id", $atts ) ) {
 		$atts["type"] = "short";
+
 		return wp_location_hours_shortcode( $atts );
 	}
 }
@@ -363,6 +376,7 @@ function wp_location_hours_short_shortcode( $atts = [] ) {
 function wp_location_hours_long_shortcode( $atts = [] ) {
 	if ( array_key_exists( "name", $atts ) || array_key_exists( "id", $atts ) ) {
 		$atts["type"] = "long";
+
 		return wp_location_hours_shortcode( $atts );
 	}
 }
@@ -370,11 +384,12 @@ function wp_location_hours_long_shortcode( $atts = [] ) {
 function wp_location_hours_today_shortcode( $atts = [] ) {
 	if ( array_key_exists( "name", $atts ) || array_key_exists( "id", $atts ) ) {
 		$atts["type"] = "today";
+
 		return wp_location_hours_shortcode( $atts );
 	}
 }
 
-function wp_location_hours_display_long( $hours ) {
+function wp_location_hours_display_long( $hours, $class = "", $style = "" ) {
 	if ( empty( $hours ) ) {
 		return;
 	}
@@ -382,7 +397,7 @@ function wp_location_hours_display_long( $hours ) {
 	ob_start();
 	try {
 		?>
-        <div class="wp-location-hours-container">
+        <div class="wp-location-hours-container <?php echo $class; ?>" style="<?php echo $style; ?>">
             <div class="wp-location-hours-status">
                 <p>Doors are: <?php echo( $hours->open_now ? "Open" : "Closed" ); ?></p>
             </div>
@@ -406,7 +421,7 @@ function wp_location_hours_display_long( $hours ) {
 	}
 }
 
-function wp_location_hours_display_short( $hours ) {
+function wp_location_hours_display_short( $hours, $class = "", $style = "" ) {
 	if ( empty( $hours ) ) {
 		return;
 	}
@@ -416,7 +431,7 @@ function wp_location_hours_display_short( $hours ) {
 	ob_start();
 	try {
 		?>
-        <div class="wp-location-hours-container">
+        <div class="wp-location-hours-container <?php echo $class; ?>" style="<?php echo $style; ?>">
             <div class="wp-location-hours-status">
                 <p>Doors are: <?php echo( $hours->open_now ? "Open" : "Closed" ); ?></p>
             </div>
@@ -439,7 +454,7 @@ function wp_location_hours_display_short( $hours ) {
 	}
 }
 
-function wp_location_hours_display_today( $hours ) {
+function wp_location_hours_display_today( $hours, $class = "", $style = "" ) {
 	if ( empty( $hours ) ) {
 		return;
 	}
@@ -448,7 +463,7 @@ function wp_location_hours_display_today( $hours ) {
 	ob_start();
 	try {
 		?>
-        <div class="wp-location-hours-container">
+        <div class="wp-location-hours-container <?php echo $class; ?>" style="<?php echo $style; ?>">
             <div class="wp-location-hours-status">
                 <p>Doors are: <?php echo( $hours->open_now ? "Open" : "Closed" ); ?></p>
             </div>
