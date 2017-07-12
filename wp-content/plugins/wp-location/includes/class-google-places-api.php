@@ -7,8 +7,8 @@
  * Time: 12:13 PM
  */
 class google_places_api {
-	private static $apiKey = "AIzaSyDuHcLe6WbcD1qVmBfZ6OXT85XOT3oiscs";
-	// private $key     = "AIzaSyCckc-IRS8AKZK-Hq_qwiq1O02nqLce0-c";
+	// private static $apiKey = "AIzaSyDuHcLe6WbcD1qVmBfZ6OXT85XOT3oiscs";
+	private static $apiKey = "AIzaSyCckc-IRS8AKZK-Hq_qwiq1O02nqLce0-c";
 	public static $place_endpoint = "https://maps.googleapis.com/maps/api/place/details/json?";
 	public static $map_endpoint = "https://maps.googleapis.com/maps/api/place/details/json?";
 	protected static $version = "3.exp";
